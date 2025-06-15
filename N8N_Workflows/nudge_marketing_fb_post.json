@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-15T07:05:11.797Z",
-  "updatedAt": "2025-06-15T13:49:35.000Z",
+  "updatedAt": "2025-06-15T15:44:12.000Z",
   "id": "PGL33HaM0dOYdgHH",
   "name": "nudge-marketing-fb-post",
   "active": false,
@@ -8,13 +8,14 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Nudge Marketing\nfor course / skill meet up"
+        "content": "## Nudge Marketing\nfor course / skill meet up",
+        "width": 300
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -260,
-        880
+        60,
+        820
       ],
       "id": "0ea13183-bb22-41ac-ac21-eda84f65f2ef",
       "name": "Sticky Note1"
@@ -30,29 +31,14 @@
       "typeVersion": 3.2,
       "position": [
         1116,
-        1275
+        1475
       ],
       "id": "99dafc2e-d48f-41a1-9165-e6aa720348ec",
       "name": "Merge"
     },
     {
       "parameters": {
-        "mode": "raw",
-        "jsonOutput": "{\n    \"news_summary\": \"Based on the current situation in the animation industry, there is a growing trend towards remote working and virtual collaboration. This shift has been largely influenced by the ongoing global pandemic, which has accelerated the adoption of technology and digital tools in the animation sector. As a result, companies are reevaluating their traditional working models and exploring new ways to streamline workflows and increase efficiency.\\n\\nThis shift towards remote working is mostly positive, as it allows for greater flexibility, increased access to talent worldwide, and reduced overhead costs for companies. However, it also presents challenges such as maintaining team cohesion, communication barriers, and potential security risks associated with remote work.\\n\\nStudents and employees in the animation industry will be significantly impacted by this trend. They will need to adapt to new ways of working, become proficient in digital collaboration tools, and possibly reconsider their career paths. For students, there may be a greater emphasis on self-directed learning and building a strong online presence to showcase their work. For employees, there may be opportunities for work-life balance but also challenges in navigating virtual team dynamics and staying motivated without physical interactions.\\n\\nIn conclusion, while the shift towards remote working in the animation industry offers many benefits, it also poses challenges that students and employees will need to navigate in order to thrive in this rapidly evolving landscape.\"\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        818,
-        900
-      ],
-      "id": "d66de0af-c0ad-4db7-b892-cf52e2d8ce5a",
-      "name": "mockup news ot"
-    },
-    {
-      "parameters": {
-        "inputText": "=## Course {{ $json.name }} for {{ $json.property_level }}\n{{ $json.property_introduction }}\n\n## Tranding\n{{ $json.news_summary }}",
+        "inputText": "=## Course {{ $json.name }} for {{ $json.property_level }}\n{{ $json.property_introduction }}\n\n## Trending / News\n{{ $json.news_summary }}",
         "categories": {
           "categories": [
             {
@@ -78,14 +64,14 @@
           ]
         },
         "options": {
-          "systemPromptTemplate": "Classify which nudge marketing advertise style is the best for trending and has potential to engage people joining the session."
+          "systemPromptTemplate": "Classify which **nudge marketing** advertise style is suit for the context that I provide and has potential to engage people joining the session."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.textClassifier",
       "typeVersion": 1.1,
       "position": [
-        1336,
-        1275
+        1556,
+        1650
       ],
       "id": "ba95bd79-2b34-44b8-a2a2-aeb700002f79",
       "name": "Text Classifier"
@@ -102,35 +88,11 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        2372,
-        1275
+        2592,
+        1425
       ],
       "id": "7e44c935-52ee-496e-9643-5111312545cf",
       "name": "Ad Outline Agent"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "d53b1aa0-5eb7-4903-a668-5d0db5f81ae2",
-              "name": "news_summary",
-              "value": "={{ $json.output }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1116,
-        1525
-      ],
-      "id": "8e814ebc-aa9c-4a5b-ac4c-dcf96e2b2657",
-      "name": "Set",
-      "disabled": true
     },
     {
       "parameters": {
@@ -144,40 +106,10 @@
       "typeVersion": 1.7,
       "position": [
         740,
-        1100
+        1050
       ],
       "id": "333d1a98-a755-49e6-8b1e-5a6914c7d964",
-      "name": "News summarize Agent",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "documentURL": "1JUzbgV0V7R1yYKj5ldX16gqcL8DFY6_r5iOQ2txLA80",
-        "actionsUi": {
-          "actionFields": [
-            {
-              "action": "insert",
-              "text": "={{ $json.output }}{{ \"\\n\\n\" }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.googleDocs",
-      "typeVersion": 2,
-      "position": [
-        1116,
-        1725
-      ],
-      "id": "b47702da-13f4-4381-b17a-9eb3ca054c20",
-      "name": "Push to Docs2",
-      "credentials": {
-        "googleDocsOAuth2Api": {
-          "id": "7y3bs0qq7bWmbPK0",
-          "name": "n8n google oauth2"
-        }
-      },
-      "disabled": true
+      "name": "News summarize Agent"
     },
     {
       "parameters": {
@@ -188,7 +120,7 @@
       "typeVersion": 2,
       "position": [
         520,
-        1125
+        1150
       ],
       "id": "d8b9220a-3fed-4a8d-aaf7-27c0c4b05b7d",
       "name": "Code"
@@ -204,10 +136,11 @@
       "typeVersion": 1.1,
       "position": [
         300,
-        1125
+        1150
       ],
       "id": "a5fa51c9-3782-4a50-9455-e4b7ec0ee432",
-      "name": "RSS Read"
+      "name": "RSS Read",
+      "retryOnFail": true
     },
     {
       "parameters": {
@@ -223,7 +156,7 @@
       "typeVersion": 1.2,
       "position": [
         828,
-        1320
+        1270
       ],
       "id": "2eb88480-6755-4b06-8785-31a2a39c3926",
       "name": "gpt-3.5-turbo",
@@ -270,8 +203,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        818,
-        1700
+        520,
+        1725
       ],
       "id": "5c01051f-9bea-4ea4-a60b-66b42388e14f",
       "name": "get pages course list",
@@ -300,8 +233,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        80,
-        2035
+        4380,
+        1275
       ],
       "id": "418aa756-2497-403e-80a6-dfb4907fe64c",
       "name": "get pages social_media_content",
@@ -318,7 +251,7 @@
       "typeVersion": 1,
       "position": [
         80,
-        1575
+        1550
       ],
       "id": "8e972c0d-9bf6-4e98-97b4-687abb54149a",
       "name": "When clicking ‘Execute workflow’"
@@ -339,8 +272,8 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        4160,
-        1125
+        4380,
+        1600
       ],
       "id": "5648fbe4-43d0-439f-80c7-7c536b39d889",
       "name": "Push to Docs1",
@@ -361,7 +294,7 @@
       "typeVersion": 3.4,
       "position": [
         818,
-        1500
+        1450
       ],
       "id": "c802038e-9d97-4429-8fc8-cdc0954d884f",
       "name": "Marketing Choices"
@@ -384,8 +317,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1712,
-        975
+        1932,
+        1200
       ],
       "id": "0c144afb-508f-4df7-a353-f50d37be5477",
       "name": "idx 0"
@@ -408,8 +341,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1712,
-        1175
+        1932,
+        1400
       ],
       "id": "f834bbe1-f724-4d8b-900d-c1b194b9abae",
       "name": "idx 1"
@@ -432,8 +365,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1712,
-        1375
+        1932,
+        1600
       ],
       "id": "ffe93f04-15aa-489a-b2ca-fdce1dc58742",
       "name": "idx 2"
@@ -456,8 +389,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1712,
-        1575
+        1932,
+        1800
       ],
       "id": "05f5894a-b707-48fb-9598-396e278cc428",
       "name": "idx 3"
@@ -480,8 +413,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1712,
-        1775
+        1932,
+        2000
       ],
       "id": "fdee3a90-40ab-40ea-ab46-55f71687cbd7",
       "name": "idx 4"
@@ -493,8 +426,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1932,
-        1233
+        2152,
+        1558
       ],
       "id": "a5efb689-7cf6-43de-a34e-ec6f1d0d0820",
       "name": "Merge1"
@@ -536,8 +469,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3564,
-        1050
+        3784,
+        1350
       ],
       "id": "cada7323-0548-4634-88ac-7e677aae05d9",
       "name": "Evaluate"
@@ -559,8 +492,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2748,
-        1275
+        2968,
+        1425
       ],
       "id": "42237e65-0f44-49d5-aa64-e70dbf0aa2d3",
       "name": "set content"
@@ -569,13 +502,13 @@
       "parameters": {
         "content": "## evaluate",
         "height": 80,
-        "width": 340
+        "width": 1100
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3020,
-        980
+        3260,
+        1020
       ],
       "id": "38d55946-fc60-4d66-b8b0-327a728e318c",
       "name": "Sticky Note"
@@ -591,25 +524,26 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2,
       "position": [
-        3784,
-        1050
+        4004,
+        1500
       ],
       "id": "e5db141f-1c3a-4760-8f93-8ae1fa1d28da",
-      "name": "Optimizer Agent"
+      "name": "Optimizer Agent",
+      "disabled": true
     },
     {
       "parameters": {
         "promptType": "define",
         "text": "=นี่เนื้อหาที่จะนำโพส:\n{{ $json.content }}",
         "options": {
-          "systemMessage": "=## ภาพรวม\nคุณเป็นผู้เชี่ยวชาญในการประเมินด้านการเนื้อหาโพส เพื่อเชิญชวน นักเรียน พนักงาน หรือบุคคลทั่วไปมาเข้าร่วม หน้าที่ของคุณคือการให้ข้อเสนอแนะเกี่ยวกับเนื้อหาที่โพส\n\n## เกณฑ์\nตรวจสอบให้แน่ใจว่า:\n- ตรวจสอบให้แน่ใจว่าเนื้อหานั้นมีความชัดเจนกับเนื้อหาการสอนตรงกับกลุ่มเป้าหมาย\n- ตรวจสอบให้แน่ใจว่าภาษาไทยที่ใช้ดูเหมือนกับ Influencer ซึ่งมีความโน้มน้าวและเป็นกันเอง\n- ตรวจสอบให้แน่ใจว่าภาษาที่ใช้ยังคงมีความเป็นมืออาชีพ เสมือนเป็นผู้ร่วมจัดตั้งการพบปะแลกเปลี่ยนความรู้ครั้งนี้\n- ตรวจสอบการใช้คำทับศัพท์ แม่นยำตรงตามกับหัวข้อที่เรียน\n- ไม่ปรับแต่งเนื้อหาเกินจริง หากไม่มีอยู่ในข้อมูลอ้างอิง\n\n## ผลลัพธ์\nคุณเพียงแค่ต้องให้ข้อเสนอแนะเท่านั้นโดยที่ไม่ต้องมีการชื่นชม หากเนื้อหาสมบูรณ์และเป็นไปตามเกณฑ์ทุกข้อ ให้พิมพ์ว่า \"Finished\" เท่านั้น"
+          "systemMessage": "=## ภาพรวม\nคุณเป็นผู้เชี่ยวชาญในการประเมินด้านการเนื้อหาโพส เพื่อเชิญชวน นักเรียน พนักงาน หรือบุคคลทั่วไปมาเข้าร่วม หน้าที่ของคุณคือการให้ข้อเสนอแนะเกี่ยวกับเนื้อหาที่โพส\n\n## เกณฑ์\nตรวจสอบให้แน่ใจว่า:\n- ตรวจสอบให้แน่ใจว่าเนื้อหานั้นมีความชัดเจนกับเนื้อหาการสอนตรงกับกลุ่มเป้าหมาย\n- ตรวจสอบให้แน่ใจว่าภาษาไทยที่ใช้ดูเหมือนกับ Influencer ซึ่งมีความโน้มน้าวและเป็นกันเอง\n- ตรวจสอบให้แน่ใจว่าภาษาที่ใช้ยังคงมีความเป็นมืออาชีพ ไม่เป็นทางการมากเกินไป เสมือนเป็นผู้ร่วมจัดตั้งการพบปะแลกเปลี่ยนความรู้ครั้งนี้\n- ตรวจสอบการใช้คำทับศัพท์ แม่นยำตรงตามกับหัวข้อที่เรียน\n- ไม่ปรับแต่งเนื้อหาเกินจริง หากไม่มีอยู่ในข้อมูลอ้างอิง\n- ลิงค์ลงทะเบียนสามารถใช่งานได้จริง\n- สามารถมีอีโมจิเพื่อความสวยงาม แต่ไม่รกสายตา\n\n## ผลลัพธ์\nคุณเพียงแค่ต้องให้ข้อเสนอแนะในส่วนที่เป็นสิ่งที่ต้องแก้เท่านั้นโดยที่ไม่ต้องมีการชื่นชม หากเนื้อหาสมบูรณ์และเป็นไปตามเกณฑ์ทุกข้อ ให้ตอบกลับแค่คำว่า \"Finished\""
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2,
       "position": [
-        2968,
-        1125
+        3188,
+        1175
       ],
       "id": "e899d53f-de52-4432-ad71-07e45ab35b81",
       "name": "Evaluator Agent"
@@ -627,8 +561,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        3056,
-        1345
+        3276,
+        1395
       ],
       "id": "e2e19246-6c53-4384-9515-f3dc447d4e63",
       "name": "4o-mini",
@@ -648,8 +582,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3344,
-        1050
+        3564,
+        1350
       ],
       "id": "bd36a5d6-f300-45f3-8007-e140886dcd5f",
       "name": "Merge2"
@@ -661,7 +595,7 @@
             {
               "id": "f3e0a9b4-b5d1-4b89-9fe7-39d586a4d8bf",
               "name": "outline",
-              "value": "=## Course: {{ $json.name }} for {{ $json.property_level }}\n## Instructor: ข้าวฟ่าง and host team\n\n## About the session:\n{{ $json.property_introduction }}\n\n## What they will get from the course:\n{{ $json.property_objective }}\n\n## Date:\nfrom {{ $json.property_date_range.start }} to {{ $json.property_date_range.end }}\n\n## Session type:\n{{ $json.property_session_type }}\n\n## Link to enroll\nhttps://google.com\n\n## Location\nBTS Phrompong",
+              "value": "=## Course: {{ $json.name }} for {{ $json.property_level }}\n## Instructor name: {{ $json.instructor.property_full_name_th }} ({{ $json.instructor.property_nick_name_th }})\n## Instructor position:{{ $json.instructor.property_position }} @{{ $json.instructor.property_company }}\n## Staff: Host team.\n\n## About the session:\n{{ $json.property_introduction }}\n\n## What they will get from the course:\n{{ $json.property_objective }}\n\n## Date:\nfrom {{ $json.property_date_range.start }} to {{ $json.property_date_range.end }}\n\n## Session type:\n{{ $json.property_session_type }}\n\n## Link to enroll\nhttps://google.com\n\n## Location\nBTS Phrompong",
               "type": "string"
             }
           ]
@@ -671,11 +605,104 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2152,
-        1275
+        2372,
+        1425
       ],
       "id": "2e983538-41d0-46d5-8404-ab3923d49784",
       "name": "set content outline"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4600,
+        1525
+      ],
+      "id": "6c91c1f8-21b2-4273-b0e4-7fd3c91cb587",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        1000
+      ],
+      "id": "612661e2-6bc6-415e-93b7-34803493f8a1",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.property_instructor[0] }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        818,
+        1750
+      ],
+      "id": "639c1a29-0095-40c6-84c3-62db3c43aec3",
+      "name": "get pages instructor",
+      "alwaysOutputData": false,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1fd0d3d-d594-48bf-a8b9-c12506761b39",
+              "name": "instructor",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1116,
+        1750
+      ],
+      "id": "c1942953-56e6-46aa-8904-32437e0626a6",
+      "name": "Set1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1336,
+        1650
+      ],
+      "id": "67dc1fd4-8a7c-406a-aad1-d04b91b94706",
+      "name": "Merge4"
     }
   ],
   "connections": {
@@ -683,12 +710,7 @@
       "main": [
         [
           {
-            "node": "Set",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Push to Docs2",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -698,11 +720,6 @@
     "Code": {
       "main": [
         [
-          {
-            "node": "mockup news ot",
-            "type": "main",
-            "index": 0
-          },
           {
             "node": "News summarize Agent",
             "type": "main",
@@ -750,6 +767,11 @@
             "node": "Merge",
             "type": "main",
             "index": 1
+          },
+          {
+            "node": "get pages instructor",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -786,27 +808,11 @@
         ]
       ]
     },
-    "mockup news ot": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set": {
-      "main": [
-        []
-      ]
-    },
     "Merge": {
       "main": [
         [
           {
-            "node": "Text Classifier",
+            "node": "Merge4",
             "type": "main",
             "index": 0
           }
@@ -925,6 +931,11 @@
             "node": "set content outline",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 2
           }
         ]
       ]
@@ -947,7 +958,18 @@
     },
     "Evaluate": {
       "main": [
-        [],
+        [
+          {
+            "node": "get pages social_media_content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ],
         [
           {
             "node": "Optimizer Agent",
@@ -978,11 +1000,6 @@
         [
           {
             "node": "Merge2",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Push to Docs1",
             "type": "main",
             "index": 0
           }
@@ -1026,6 +1043,50 @@
           }
         ]
       ]
+    },
+    "get pages social_media_content": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get pages instructor": {
+      "main": [
+        [
+          {
+            "node": "Set1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set1": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1036,7 +1097,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "5c00f0ac-b8c2-464c-9c65-51696c74e74f",
+  "versionId": "d80f7d89-eb43-4549-8dc8-8264cbee1e4d",
   "triggerCount": 1,
   "tags": [
     {
