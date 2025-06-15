@@ -1,0 +1,230 @@
+{
+  "createdAt": "2025-06-14T16:42:26.468Z",
+  "updatedAt": "2025-06-15T03:15:51.000Z",
+  "id": "uZVVDV5M99ytySeS",
+  "name": "Playground",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -200
+      ],
+      "id": "51236ee4-c0d3-466e-a894-416207f91a67",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        160
+      ],
+      "id": "3a74168b-ec84-45e4-9ac5-634c34f14ee8",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "OWBmhC44Dxoxd8qx",
+          "name": "Personal - n8n connect"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $json.now_fmt }}{{\"\\n\"}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        660,
+        -200
+      ],
+      "id": "ba93c57e-7f8c-426a-9438-f6af21448ae1",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7y3bs0qq7bWmbPK0",
+          "name": "n8n google oauth2"
+        }
+      },
+      "notes": "https://docs.google.com/document/d/1JUzbgV0V7R1yYKj5ldX16gqcL8DFY6_r5iOQ2txLA80/"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "n8n_demo",
+        "limit": 1,
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        220,
+        -100
+      ],
+      "id": "4c7b3e5d-ea13-40d0-8080-2b482c82f55b",
+      "name": "find n8n_demo",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        440,
+        -200
+      ],
+      "id": "4fb999c4-4d44-4a95-89f5-72af5ed37249",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "g3WPrnyPDyevJKP5",
+          "mode": "list",
+          "cachedResultName": "get_now_format"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        -300
+      ],
+      "id": "ea2cd28b-4855-4cca-819a-14014468c793",
+      "name": "get_now_format"
+    },
+    {
+      "parameters": {
+        "content": "write output to gdoc",
+        "height": 440,
+        "width": 700
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        100,
+        -360
+      ],
+      "id": "9d19a538-4e6e-4800-a0cd-f9d9df0524ba",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "find n8n_demo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get_now_format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "find n8n_demo": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_now_format": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "925ce0f5-c83e-4251-a036-33f20e58ec20",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-14T16:35:00.314Z",
+      "updatedAt": "2025-06-14T16:35:00.314Z",
+      "id": "FLY23u7lZ3euVVMc",
+      "name": "experimental"
+    }
+  ]
+}
