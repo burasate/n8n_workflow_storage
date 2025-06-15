@@ -1,0 +1,465 @@
+{
+  "createdAt": "2025-06-15T07:05:11.797Z",
+  "updatedAt": "2025-06-15T11:11:27.000Z",
+  "id": "PGL33HaM0dOYdgHH",
+  "name": "nudge-marketing-fb-post",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Nudge Marketing\nfor course / skill meet up"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        880
+      ],
+      "id": "0ea13183-bb22-41ac-ac21-eda84f65f2ef",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        700,
+        1640
+      ],
+      "id": "99dafc2e-d48f-41a1-9165-e6aa720348ec",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n    \"news_summary\": \"Based on the current situation in the animation industry, there is a growing trend towards remote working and virtual collaboration. This shift has been largely influenced by the ongoing global pandemic, which has accelerated the adoption of technology and digital tools in the animation sector. As a result, companies are reevaluating their traditional working models and exploring new ways to streamline workflows and increase efficiency.\\n\\nThis shift towards remote working is mostly positive, as it allows for greater flexibility, increased access to talent worldwide, and reduced overhead costs for companies. However, it also presents challenges such as maintaining team cohesion, communication barriers, and potential security risks associated with remote work.\\n\\nStudents and employees in the animation industry will be significantly impacted by this trend. They will need to adapt to new ways of working, become proficient in digital collaboration tools, and possibly reconsider their career paths. For students, there may be a greater emphasis on self-directed learning and building a strong online presence to showcase their work. For employees, there may be opportunities for work-life balance but also challenges in navigating virtual team dynamics and staying motivated without physical interactions.\\n\\nIn conclusion, while the shift towards remote working in the animation industry offers many benefits, it also poses challenges that students and employees will need to navigate in order to thrive in this rapidly evolving landscape.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1420,
+        900
+      ],
+      "id": "d66de0af-c0ad-4db7-b892-cf52e2d8ce5a",
+      "name": "mockup news ot"
+    },
+    {
+      "parameters": {
+        "categories": {
+          "categories": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        820,
+        1440
+      ],
+      "id": "ba95bd79-2b34-44b8-a2a2-aeb700002f79",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "options": {
+          "systemMessage": "=# Overview\nYou are an expert marketer & advertise outline writer particularly in Nudge Marketing. You will receive information about course for study.\n\n# Your task is to:\n1. write outline"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1180,
+        1380
+      ],
+      "id": "7e44c935-52ee-496e-9643-5111312545cf",
+      "name": "Ad Outline Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d53b1aa0-5eb7-4903-a668-5d0db5f81ae2",
+              "name": "news_summary",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1400,
+        1000
+      ],
+      "id": "8e814ebc-aa9c-4a5b-ac4c-dcf96e2b2657",
+      "name": "Set",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Topic",
+        "options": {
+          "systemMessage": "=# Overview\nYou are an expert analyst, you will get information about the news topics amoung animation industry.\n\n# Your task is to:\n1. summary current situation and give comments is that tend to positive or negative.\n2. give what will affect to students, employees.\n3. the format that you give should be only body."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1060,
+        1160
+      ],
+      "id": "333d1a98-a755-49e6-8b1e-5a6914c7d964",
+      "name": "News summarize Agent",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "1JUzbgV0V7R1yYKj5ldX16gqcL8DFY6_r5iOQ2txLA80",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $json.output }}{{ \"\\n\\n\" }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        1160
+      ],
+      "id": "b47702da-13f4-4381-b17a-9eb3ca054c20",
+      "name": "Push to Docs2",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7y3bs0qq7bWmbPK0",
+          "name": "n8n google oauth2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "title_ls = ''\n\nfor item in _input.all():\n  title_ls += '- ' + str(item.json.title) + '\\n'\n\ndata = {\n  'news': title_ls\n}\nreturn data"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        1160
+      ],
+      "id": "d8b9220a-3fed-4a8d-aaf7-27c0c4b05b7d",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "https://www.cartoonbrew.com/feed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        1160
+      ],
+      "id": "a5fa51c9-3782-4a50-9455-e4b7ec0ee432",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        1900
+      ],
+      "id": "2eb88480-6755-4b06-8785-31a2a39c3926",
+      "name": "gpt-3.5-turbo",
+      "credentials": {
+        "openAiApi": {
+          "id": "OWBmhC44Dxoxd8qx",
+          "name": "Personal - n8n connect"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "21372121-8164-80ea-936c-ca1b516ef017",
+          "mode": "list",
+          "cachedResultName": "cgi_course",
+          "cachedResultUrl": "https://www.notion.so/21372121816480ea936cca1b516ef017"
+        },
+        "limit": 10,
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
+            {
+              "key": "status|status",
+              "condition": "equals",
+              "statusValue": "on_advertise"
+            }
+          ]
+        },
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "key": "date_range|date",
+                "direction": "descending"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        600,
+        1440
+      ],
+      "id": "5c01051f-9bea-4ea4-a60b-66b42388e14f",
+      "name": "get pages course list",
+      "alwaysOutputData": false,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "21372121-8164-80d2-9cc5-f0d61c7d762f",
+          "mode": "list",
+          "cachedResultName": "social_media_content",
+          "cachedResultUrl": "https://www.notion.so/21372121816480d29cc5f0d61c7d762f"
+        },
+        "limit": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        1200
+      ],
+      "id": "418aa756-2497-403e-80a6-dfb4907fe64c",
+      "name": "get pages social_media_content",
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        440,
+        1160
+      ],
+      "id": "8e972c0d-9bf6-4e98-97b4-687abb54149a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"patterns\": [\n    {\n      \"title\": \"FOMO + Future-Self Vision\",\n      \"hook\": \"Imagine 3 months from now—you've mastered [skill], while others are still thinking about it.\",\n      \"body\": \"The world’s changing fast. Those who adapt win. Learning [skill] now means you’re future-proofing yourself—whether it’s for better income, job freedom, or creative independence.\",\n      \"cta\": \"Don’t scroll past your future. Start today 👉 [Link]\"\n    },\n    {\n      \"title\": \"Pain Point + Simple Step\",\n      \"hook\": \"Tired of feeling stuck while others move ahead?\",\n      \"body\": \"The skill gap is real. But it doesn’t take years. A small decision today (like starting [skill]) could shift your entire career/life.\",\n      \"cta\": \"Make progress, not excuses. Join us and start learning now. [Link]\"\n    },\n    {\n      \"title\": \"Testimonial Style / Social Proof\",\n      \"hook\": \"I never thought I'd be earning from this skill I learned in 2 weeks.\",\n      \"body\": \"Stories like [Name] aren’t rare. Thousands are learning [skill] not just for fun—but for better jobs, side incomes, or freedom.\",\n      \"cta\": \"What’s your story going to be? Take the first step 👉 [Link]\"\n    },\n    {\n      \"title\": \"Loss Aversion / Limited Opportunity\",\n      \"hook\": \"People who wait lose out—every single time.\",\n      \"body\": \"While you're hesitating, others are learning [skill], getting hired, or launching their own thing. Time is the most expensive thing you’ll spend.\",\n      \"cta\": \"Secure your spot. Learn [skill] today before this window closes. [Link]\"\n    },\n    {\n      \"title\": \"Identity Activation\",\n      \"hook\": \"You don’t need to be a genius to learn this. You just need to start.\",\n      \"body\": \"Real learners aren’t born—they’re made. If you're someone who values growth, freedom, and building something real, this is for you.\",\n      \"cta\": \"Step into the version of you that doesn’t wait. Join here 👉 [Link]\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        260,
+        1640
+      ],
+      "id": "c802038e-9d97-4429-8fc8-cdc0954d884f",
+      "name": "define marketing pattern"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "1JUzbgV0V7R1yYKj5ldX16gqcL8DFY6_r5iOQ2txLA80",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $('Set Bio').item.json.bio }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1580,
+        1380
+      ],
+      "id": "5648fbe4-43d0-439f-80c7-7c536b39d889",
+      "name": "Push to Docs1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7y3bs0qq7bWmbPK0",
+          "name": "n8n google oauth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "News summarize Agent": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Push to Docs2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "mockup news ot",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "News summarize Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-3.5-turbo": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "News summarize Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Ad Outline Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get pages course list": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get pages course list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ad Outline Agent": {
+      "main": [
+        [
+          {
+            "node": "Push to Docs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "642e8005-1f31-4b58-b2f1-545c3d2a5ebb",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2025-06-15T07:15:53.533Z",
+      "updatedAt": "2025-06-15T07:15:53.533Z",
+      "id": "IdmwSqVN0qsBEGBm",
+      "name": "on production"
+    }
+  ]
+}
