@@ -1,0 +1,77 @@
+{
+  "createdAt": "2025-06-14T14:51:17.934Z",
+  "updatedAt": "2025-06-15T02:26:32.000Z",
+  "id": "pliGse3eiXipgx2u",
+  "name": "Sub-Workflow Test",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8b760002-2c79-4236-b879-e4a67fa9b4c8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "bHEDkAoaYRGLpP7s",
+          "mode": "list",
+          "cachedResultName": "get_now_fmt"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "0515e8d0-e0d1-436b-b5a7-6444dbb96004",
+      "name": "Execute Workflow"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "7cdedb42-909f-4436-8fda-72e7a3a9853d",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-14T16:35:00.314Z",
+      "updatedAt": "2025-06-14T16:35:00.314Z",
+      "id": "FLY23u7lZ3euVVMc",
+      "name": "experimental"
+    }
+  ]
+}
