@@ -1,0 +1,523 @@
+{
+  "createdAt": "2025-06-16T06:13:25.958Z",
+  "updatedAt": "2025-06-16T07:55:55.000Z",
+  "id": "hVMlVH1gIVLAG6NR",
+  "name": "social_media_content_streaming",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        80
+      ],
+      "id": "bfb06d68-713d-439d-9ee7-dd64fb547d8b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "21372121-8164-80d2-9cc5-f0d61c7d762f",
+          "mode": "list",
+          "cachedResultName": "social_media_content",
+          "cachedResultUrl": "https://www.notion.so/21372121816480d29cc5f0d61c7d762f"
+        },
+        "limit": 100,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "status|status",
+              "condition": "does_not_equal",
+              "statusValue": "need to fix"
+            },
+            {
+              "key": "status|status",
+              "condition": "does_not_equal",
+              "statusValue": "awating"
+            }
+          ]
+        },
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "timestamp": true,
+                "key": "created_time",
+                "direction": "descending"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        380
+      ],
+      "id": "54a4721a-5988-4f40-a406-99ac18b7d858",
+      "name": "get_all_post_content",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -20,
+        380
+      ],
+      "id": "815e0164-1d6f-4d7e-8b1b-840c28dfba77",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        860,
+        380
+      ],
+      "id": "5b1e2b6b-6a33-49d1-a1a1-2f45973d5c7e"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.debugHelper",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        455
+      ],
+      "id": "5fb3c577-7dd2-4ce9-ba77-a246308442b2",
+      "name": "DebugHelper"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.property_status }}",
+                    "rightValue": "ready to live",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "5de2bb28-0585-410c-808e-7412cda2e51e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "create new post"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "223e8dfa-dc52-4c26-9ebd-d37a9332d41c",
+                    "leftValue": "={{ $json.property_status }}",
+                    "rightValue": "is live",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "send to update"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        200,
+        380
+      ],
+      "id": "c913652c-abe9-4af4-80f1-8737bc196813",
+      "name": "Switch"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        200,
+        180
+      ],
+      "id": "bece9493-0d78-4a21-8d9b-80b6bbd4ce6a",
+      "name": "done"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        420,
+        280
+      ],
+      "id": "60c4a9c6-ba2a-4786-838b-2fe6f1a16471",
+      "name": "create new"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        640,
+        480
+      ],
+      "id": "d1fd89c6-25d6-4501-ac0c-35067238a219",
+      "name": "update post"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "me",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        640,
+        280
+      ],
+      "id": "a775f3f3-4b7d-4066-a033-9f314daa7524",
+      "name": "Facebook Graph API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "pzVO67qR0L47N9nf",
+          "name": "dex3d motion lab page token"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        80
+      ],
+      "id": "02d0dcf6-35eb-46cc-a511-46abf12a1599",
+      "name": "init"
+    },
+    {
+      "parameters": {
+        "errorMessage": "=API has expired or set wrong params:\nRe new https://developers.facebook.com/tools/explorer/"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -220
+      ],
+      "id": "6e099f85-965e-4492-b8fb-edaac8e44ae2",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.statusCode }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "number",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "13d4da66-b6af-4b26-96cb-c60c15389941"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -20,
+        -120
+      ],
+      "id": "c8f48c16-52a9-4e1c-94d9-02bdb322b092",
+      "name": "error check"
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v22.0",
+        "node": "me",
+        "edge": "={{\"\"}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -120
+      ],
+      "id": "83f5d463-4c56-4df2-9980-3106b81bda4f",
+      "name": "api tester",
+      "notesInFlow": true,
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "pzVO67qR0L47N9nf",
+          "name": "dex3d motion lab page token"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -20
+      ],
+      "id": "c647111a-17f1-4715-b82c-849bd58f05a7",
+      "name": "do nothing"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "init",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_all_post_content": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "DebugHelper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DebugHelper": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "create new",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "update post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create new": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update post": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "init": {
+      "main": [
+        [
+          {
+            "node": "get_all_post_content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "api tester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "error check": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "api tester": {
+      "main": [
+        [
+          {
+            "node": "error check",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "f8ae0606-e8bb-4c1d-a742-fa98e5c7f369",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-15T07:15:53.533Z",
+      "updatedAt": "2025-06-15T07:15:53.533Z",
+      "id": "IdmwSqVN0qsBEGBm",
+      "name": "on production"
+    }
+  ]
+}
