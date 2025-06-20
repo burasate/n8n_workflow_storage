@@ -1,10 +1,10 @@
 {
-  "createdAt": "2025-06-18T13:34:32.411Z",
-  "updatedAt": "2025-06-18T13:34:32.411Z",
-  "id": "hmw1U9NHZWMINTuD",
+  "createdAt": "2025-06-14T14:47:35.505Z",
+  "updatedAt": "2025-06-14T14:48:06.000Z",
+  "id": "1TkLMeKTsAg7zylP",
   "name": "My workflow 2",
   "active": false,
-  "isArchived": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {},
@@ -14,22 +14,21 @@
         0,
         0
       ],
-      "id": "5cf2cfac-451f-4c7e-9507-ce2d059c0300",
+      "id": "69b9cda5-2712-4571-b660-b0b6119fd34d",
       "name": "When clicking ‘Execute workflow’"
     },
     {
       "parameters": {
-        "url": "https://80.lv/feed",
         "options": {}
       },
-      "type": "n8n-nodes-base.rssFeedRead",
+      "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
         220,
         0
       ],
-      "id": "3004cfbd-cc0d-4bcf-8db8-f62da269fa6a",
-      "name": "RSS Read"
+      "id": "b8a7d843-0e22-4a4d-8769-7c797abffaa3",
+      "name": "Execute Workflow"
     }
   ],
   "connections": {
@@ -37,7 +36,7 @@
       "main": [
         [
           {
-            "node": "RSS Read",
+            "node": "Execute Workflow",
             "type": "main",
             "index": 0
           }
@@ -51,7 +50,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "ee789d4e-b69b-47ce-8bd9-f39bcd0c65b3",
+  "versionId": "61eabebb-a3b4-4de0-a95a-3b0b2ee06cf9",
   "triggerCount": 0,
   "tags": []
 }
