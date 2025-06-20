@@ -1,0 +1,648 @@
+{
+  "createdAt": "2025-06-18T13:34:32.411Z",
+  "updatedAt": "2025-06-20T15:05:13.000Z",
+  "id": "hmw1U9NHZWMINTuD",
+  "name": "event_emcee_script_generator",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        55
+      ],
+      "id": "5cf2cfac-451f-4c7e-9507-ce2d059c0300",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "21372121-8164-80ea-936c-ca1b516ef017",
+          "mode": "list",
+          "cachedResultName": "cgi_course",
+          "cachedResultUrl": "https://www.notion.so/21372121816480ea936cca1b516ef017"
+        },
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "timestamp": true,
+                "key": "last_edited_time",
+                "direction": "descending"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        55
+      ],
+      "id": "5b7ed119-e77c-4be4-9144-459fbc2f0941",
+      "name": "get courses",
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        440,
+        55
+      ],
+      "id": "f2cde617-b232-4196-a12b-f6c33e7eacbd",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        3612,
+        380
+      ],
+      "id": "2018fa5d-d57f-4c83-9766-9da62d99c96c"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "done",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -120
+      ],
+      "id": "71f1cb5b-02db-4a00-9361-f0e432a5cbcc"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1b361461-f6f0-4e99-879b-753303af3c09",
+              "leftValue": "={{ $json.property_cgi_lesson_outline }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        55
+      ],
+      "id": "7f2c1eda-cbb6-43db-89f6-45b1bd2ed2e4",
+      "name": "no lesson outline"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "property_cgi_lesson_outline",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        255
+      ],
+      "id": "0391c93e-9fe2-47ce-8c3b-95e9605c7f08",
+      "name": "separate lesson"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.property_cgi_lesson_outline }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        255
+      ],
+      "id": "5c8a75d9-ae2e-4864-89c8-2154f911b2b2",
+      "name": "get lesson list",
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "property_sequence_num"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        255
+      ],
+      "id": "15ed7534-d0bb-4c98-aaa0-6e781fc0241f",
+      "name": "sort lesson list"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "property_detail_fmt",
+              "renameField": true,
+              "outputFieldName": "lesson_sequence"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1980,
+        255
+      ],
+      "id": "828f986c-c3fb-4f72-90f3-f2a0e8cbcc6b",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "14b47066-16d3-4d85-b438-9ecdc02fccfd",
+              "leftValue": "={{ $json.property_material_status }}",
+              "rightValue": "ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1760,
+        255
+      ],
+      "id": "9bd0c7df-3acd-4a5c-9c5d-771416f465fb",
+      "name": "select ready status"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "python",
+        "pythonCode": "\n_input.item.json.all_lession_fmt = '\\n'.join(_input.item.json.lesson_sequence)\nreturn _input.item"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        255
+      ],
+      "id": "37c23c20-3f69-4813-b86c-01aa47663f3e",
+      "name": "join string"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2728,
+        250
+      ],
+      "id": "18ba00e3-a503-48e9-8fbe-2337f56ebcc9",
+      "name": "gpt-4o",
+      "credentials": {
+        "openAiApi": {
+          "id": "OWBmhC44Dxoxd8qx",
+          "name": "Personal - n8n connect"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2420,
+        180
+      ],
+      "id": "c3fa79d0-8ce0-452f-97af-64a87f2d99c5",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "pass",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        55
+      ],
+      "id": "914059f8-5456-4ed3-8ad9-02e2cb47d6b5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "lessons data",
+      "typeVersion": 1,
+      "position": [
+        880,
+        255
+      ],
+      "id": "aa92eaff-edc9-4b38-a751-786da1eeb6a3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=##This is the detail about event.##\n\n## Event name:\n{{ $json.name }} for {{ $json.property_level }}\n## About:\n{{ $json.property_category }}\n{{ $json.property_introduction }}\n\n## Event type:\n{{ $json.property_session_type }}\n\n## Time start\n{{ $json.property_date_range.start }}\n## Time end\n{{ $json.property_date_range.end }}\n\n## Main lessios or acts:\n{{ $json.all_lession_fmt }}",
+        "options": {
+          "systemMessage": "=## Overview\nYou are expert emcee script writer for seminar. You will be recived the information about the event topic and details\n\n## Preferred sequences\n1. Meet-up activity before primary content begins. You have to reply listing out of activity ways to let people greeting each other with your optional 3 ways, otherwise it is just hanging out. This progression will take around 30-60 minutes. Staff will proceed this step in order to make more friendly atmosphere.\n\n2. The main topic of the event. This will take the longest time progression. You have to breakdown and make content queue clarity or easy to let main speaker/teacer know what is current and what are next. If the details has specific industry words, try to improve the message with jargon vocab. You are allowed to evaluate about duration compatibility for each lesson or act.\n\n3. Outro of the event. It will takes around 30 minutes. There are 3 things that you will create. \n3.1 You will create Q&A to get feedback about \"how was the event going?\", \"If we get to meet togerther again, what is your wish or anticipate that there will be happned?\". Also create categories checkboxs so staffs can check which feedbacks are associte to fix up for the next event, Just 6 segmentations is fine also remark that staff need to tick the box or circle the words.\n3.2 You will create some invitation words to invite audience/everyone to take part of the staff group builing the team and keep the organization go sustainability to let them keep in touch for the future. You need to label it is optional hiring for more staff.\n3.3 (for Marketing) You will create to promotion/advertising that we have many other events and they have to keep their eye on the next ones. If you have no clue about that, just write some guidance.\n\n## Preferred your output language\nภาษาไทย (บังคับ)\n\n## Header\nEMCEE SCRIPT FOR STAFFs\nEvent : {{ $json.name }}\nDate : {{ $json.property_date_range.start }}-{{ $json.property_date_range.end }}\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        30
+      ],
+      "id": "a08edde4-aab3-4663-9047-f680e38fc92d",
+      "name": "Emcee Script Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=บทเรียนทั้งหมด:\n{{ $json.all_lession_fmt }}\n\nเนื้อหาที่มี:\n{{ $json.output }}\n\nวัน-เวลา:\n{{ $json.property_date_range.start }}-{{ $json.property_date_range.end }}\n",
+        "options": {
+          "systemMessage": "=## ภาพรวม\nคุณคือผู้เชี่ยวชาญการดำเนินพิธีการ สิ่งที่คุณจะต้องทำคือแก้ไขสคริปพิธีการให้เข้าใจง่ายขึ้น.\n\n## สิ่งที่ต้องทำ\n- เมื่อเจอเนื้อหาที่เป็นศัพท์เฉพาะในวงการนั้นๆ ทำให้เข้าใจเมื่อวิทยากรผู้เชี่ยวชาญจะต้องพูดถึงมัน\n- ตกแต่งให้เป็นระเบียบ เรียบร้อย สวยงาม โดยสามารถใช้อีโมจิเล็กๆน้อยๆได้\n- เรียบเรียงในส่วนของเวลาให้ชัดเจน ยิ่งเป็นรูปแบบของการแสดงทามไลน์ของเวลายิ่งดี เช่น 13:00 เริ่มต้นกิจกรรม, 16:00 สิ้นสุดกิจกรรม\n- ใช่ --- ในการเว้นบรรทัด เพื่อให้ง่ายต่อการอ่าน\n- เพิ่มเติมในส่วนของรายละเอียดถ้าหากมีการตกหล่นไป"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        3236,
+        180
+      ],
+      "id": "8f9e1030-07a5-4e32-9e84-f6619f5d25c9",
+      "name": "Optimizer Agent"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3016,
+        180
+      ],
+      "id": "2a999d3d-e8cc-448d-8d7d-b3c99caff1f7",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "1JUzbgV0V7R1yYKj5ldX16gqcL8DFY6_r5iOQ2txLA80",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{\"\\n----\\n\"}}{{ $json.output }}{{\"\\n----\\n\"}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3612,
+        130
+      ],
+      "id": "4e92e23a-94a6-4613-8bd4-af3d4b2b2118",
+      "name": "Push to Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7y3bs0qq7bWmbPK0",
+          "name": "n8n google oauth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "get courses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "no lesson outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get courses": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "no lesson outline": {
+      "main": [
+        [
+          {
+            "node": "done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "pass",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "lessons data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "separate lesson": {
+      "main": [
+        [
+          {
+            "node": "get lesson list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get lesson list": {
+      "main": [
+        [
+          {
+            "node": "sort lesson list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sort lesson list": {
+      "main": [
+        [
+          {
+            "node": "select ready status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "join string",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select ready status": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "join string": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "gpt-4o": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Optimizer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Emcee Script Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Emcee Script Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "pass": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lessons data": {
+      "main": [
+        [
+          {
+            "node": "separate lesson",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emcee Script Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Optimizer Agent": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Push to Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Optimizer Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "81f2e9a0-f2c3-4894-949e-409c70ac9da0",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-14T16:35:00.314Z",
+      "updatedAt": "2025-06-14T16:35:00.314Z",
+      "id": "FLY23u7lZ3euVVMc",
+      "name": "experimental"
+    }
+  ]
+}
