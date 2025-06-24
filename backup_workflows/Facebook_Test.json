@@ -1,0 +1,129 @@
+{
+  "createdAt": "2025-06-14T15:54:48.853Z",
+  "updatedAt": "2025-06-14T16:35:01.000Z",
+  "id": "Cg929xwW9c0aLSoY",
+  "name": "Facebook Test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ea5991d3-d791-4f77-a080-83bfd81438ea",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v22.0",
+        "node": "me",
+        "edge": "posts",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "0218042c-2efd-463a-bda3-cfc66ee9ed99",
+      "name": "Get All Posts",
+      "alwaysOutputData": false,
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "pzVO67qR0L47N9nf",
+          "name": "dex3d motion lab page token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "{\n           \"message\":\"your_message_text\",\n           \"link\":\"your_url\",\n           \"published\":\"false\",\n           \"scheduled_publish_time\":\"unix_time_stamp_of_a_future_date\",\n         }'",
+        "width": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        400
+      ],
+      "id": "ce479425-1ebe-456d-975f-1d853cd3ffa4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "me",
+        "edge": "feed",
+        "options": {
+          "queryParametersJson": "{\n  \"message\":\"your_message_text\"\n}"
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        0,
+        260
+      ],
+      "id": "1741d8e2-4f85-4580-bf03-7067bdb5f5b4",
+      "name": "Facebook Post",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "pzVO67qR0L47N9nf",
+          "name": "dex3d motion lab page token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Facebooc API Doc\n\nhttps://developers.facebook.com/docs/pages-api/posts/?locale=en_US",
+        "height": 120,
+        "width": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        400
+      ],
+      "id": "d3e27bbe-b251-4d90-a8c1-3d6afd2b0353",
+      "name": "Sticky Note1"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get All Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b8c5b842-6d97-4b53-b6df-9c118345507d",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-14T16:35:00.314Z",
+      "updatedAt": "2025-06-14T16:35:00.314Z",
+      "id": "FLY23u7lZ3euVVMc",
+      "name": "experimental"
+    }
+  ]
+}
