@@ -1,0 +1,74 @@
+{
+  "createdAt": "2025-06-23T05:51:35.096Z",
+  "updatedAt": "2025-06-23T16:13:45.000Z",
+  "id": "NkdZphjGXBfOUYB0",
+  "name": "concat_profile_ref_binary",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "img1_b64"
+            },
+            {
+              "name": "img2_b64"
+            }
+          ]
+        }
+      },
+      "id": "1de8d483-1f65-420d-9c5b-c0767dd51bb0",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        340,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  binary: {\n    img_data1: {\n      data: $json[\"img1_b64\"],\n      mimeType: \"image/jpeg\",\n      fileName: \"profile.jpg\"\n    },\n    img_data2: {\n      data: $json[\"img2_b64\"],\n      mimeType: \"image/jpeg\",\n      fileName: \"ref.jpg\"\n    }\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        -400
+      ],
+      "id": "5d31ed3a-3f03-4208-8c6e-2080953f64e1",
+      "name": "code"
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "5569bc6b-4fe9-491c-9c55-d973fb0f1d6b",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-15T02:26:16.103Z",
+      "updatedAt": "2025-06-15T02:26:16.103Z",
+      "id": "wMv4vy6w64wHpbzV",
+      "name": "function"
+    }
+  ]
+}
