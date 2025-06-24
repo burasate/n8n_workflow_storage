@@ -1,0 +1,994 @@
+{
+  "createdAt": "2025-06-15T03:16:10.237Z",
+  "updatedAt": "2025-06-24T08:43:33.000Z",
+  "id": "6JYkJBc0dW0GLvIi",
+  "name": "n8n_workflow_backup",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=WARNING: Failed to upload new N8N workflow <{{ $json.url }}|{{ $json.['workflow-name'] }}> to repo",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        1845
+      ],
+      "id": "281fc63d-8fc7-451e-ac19-cd22fb84a70d",
+      "name": "Discord",
+      "webhookId": "2a10ede5-0bf7-4d2d-be77-31aea60e229b",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "XEwLZgcGkqAdFJjT",
+          "name": "node webhook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 4
+            }
+          ]
+        }
+      },
+      "id": "9938b65e-e753-490d-8ac1-86759ef0eeb8",
+      "name": "Every Monday at 1am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        120,
+        1645
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "filters": {
+          "activeWorkflows": false
+        },
+        "requestOptions": {}
+      },
+      "id": "43a814de-6527-4fdb-9f7a-d886b8dfe7c3",
+      "name": "get all workflows",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        340,
+        1645
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "8JxYcgciM6o7vOtg",
+          "name": "n8n localhost api"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1744510d-7ed7-46d8-acd3-f975ab73f298",
+              "name": "active",
+              "type": "boolean",
+              "value": "={{ $json.active }}"
+            },
+            {
+              "id": "7e76f5dc-0c32-4b26-a289-975155b80112",
+              "name": "url",
+              "type": "string",
+              "value": "=https://<n8n_host_name>/workflow/{{ $json.id }}"
+            },
+            {
+              "id": "a7b069bf-8090-4dca-a432-f4fd7aa84e6f",
+              "name": "errorWorkflow",
+              "type": "boolean",
+              "value": "={{ !!$json.settings?.errorWorkflow }}"
+            },
+            {
+              "id": "0bff7a9b-0860-4552-b0f6-5fc279fc75d6",
+              "name": "workflow-name",
+              "type": "string",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "id": "3065ee2f-d1bb-42b7-b341-7bb38b0f6720",
+              "name": "updatedAt",
+              "type": "string",
+              "value": "={{ $json.updatedAt }}"
+            },
+            {
+              "id": "ea9d39e4-50ca-4c79-b6ab-8b22cafd0257",
+              "name": "createdAt",
+              "type": "string",
+              "value": "={{ $json.createdAt }}"
+            },
+            {
+              "id": "265d66cd-1796-40eb-ae5b-dca8d1a91871",
+              "name": "envId",
+              "type": "string",
+              "value": "=internal-{{ $json.id }}"
+            },
+            {
+              "id": "6ffb9c13-82a7-4f40-b2e6-887c018b747c",
+              "name": "workflow-definition",
+              "type": "string",
+              "value": "={{ JSON.stringify($json, null, 2) }}"
+            },
+            {
+              "id": "8b2a1098-125f-44b0-b8c0-99098e582156",
+              "name": "workflow-export-filename",
+              "type": "string",
+              "value": "={{ $json.name.replace(/ /g, \"_\").replace(/-/g, \"_\") + \".json\" }}"
+            },
+            {
+              "id": "04c1a4eb-568d-4d35-8d5f-cf644fa8f3ad",
+              "name": "git_dir",
+              "value": "backup_workflows",
+              "type": "string"
+            },
+            {
+              "id": "ef0a6ca3-371e-4838-a6ab-8192cb789a3b",
+              "name": "tags",
+              "value": "={{ $json.tags }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "140e8dff-f4c9-4411-a501-de44b048d493",
+      "name": "set data fields",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        780,
+        1645
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "burasate",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_workflow_storage",
+          "mode": "list",
+          "cachedResultName": "n8n_workflow_storage",
+          "cachedResultUrl": "https://github.com/burasate/n8n_workflow_storage"
+        },
+        "filePath": "={{ $json.git_dir }}/{{ $json[\"workflow-export-filename\"].replaceAll(/[\\/:*?\"<>|,\\t\\n#%&']/g, \"_\") }}",
+        "fileContent": "={{ $json[\"workflow-definition\"] }}",
+        "commitMessage": "=n8n workflow id: {{ $json.envId }}"
+      },
+      "id": "be601a07-e9a5-4f72-914d-974a891689b3",
+      "name": "try to update",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1000,
+        1745
+      ],
+      "typeVersion": 1,
+      "webhookId": "a1d90ef5-0d51-4fd1-9ca6-ee10ef0c8f29",
+      "credentials": {
+        "githubApi": {
+          "id": "HsLfo7JNtGN25WE2",
+          "name": "DEX3D"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "burasate",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_workflow_storage",
+          "mode": "list",
+          "cachedResultName": "n8n_workflow_storage",
+          "cachedResultUrl": "https://github.com/burasate/n8n_workflow_storage"
+        },
+        "filePath": "={{ $json.git_dir }}/{{ $json[\"workflow-export-filename\"].replaceAll(/[\\/:*?\"<>|,\\t\\n#%&']/g, \"_\") }}",
+        "fileContent": "={{ $json[\"workflow-definition\"] }}",
+        "commitMessage": "=n8n workflow id: {{ $json.envId }}"
+      },
+      "id": "db05e2d7-c59a-48a3-9a6e-eb9ce5a92c5a",
+      "name": "create_new",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        1440,
+        1820
+      ],
+      "typeVersion": 1,
+      "webhookId": "993eb53c-43b3-4d77-b45d-d6681842b031",
+      "credentials": {
+        "githubApi": {
+          "id": "HsLfo7JNtGN25WE2",
+          "name": "DEX3D"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        1820
+      ],
+      "id": "a65812b4-b2f2-4976-b138-b13475db1f9a",
+      "name": "not exists"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        1645
+      ],
+      "id": "289c5ed1-e894-40b9-910c-d3aee873b6e2",
+      "name": "update database"
+    },
+    {
+      "parameters": {
+        "resource": "database",
+        "databaseId": {
+          "__rl": true,
+          "value": "21c72121-8164-80b8-98a4-f022608970c1",
+          "mode": "list",
+          "cachedResultName": "n8n_git_backup",
+          "cachedResultUrl": "https://www.notion.so/21c72121816480b898a4f022608970c1"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1880,
+        1445
+      ],
+      "id": "308ec7d9-7c74-427b-8846-1c9227141ff7",
+      "name": "db",
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78c5757a-370c-4d6e-87cf-d6325f2782fc",
+              "name": "db_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2100,
+        1445
+      ],
+      "id": "d9081f5c-bd08-492d-8447-423530ba8b5d",
+      "name": "get db id"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2320,
+        1445
+      ],
+      "id": "e97a1f72-b38f-4b48-ab08-e23c5f1dca79",
+      "name": "merge"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "={{ $json.db_id }}",
+          "mode": "id"
+        },
+        "title": "={{ $json.content.name }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "name|title",
+              "title": "={{ $json.content.name }}"
+            },
+            {
+              "key": "tag|multi_select",
+              "multiSelectValue": "={{ $json.tags }}"
+            },
+            {
+              "key": "url|url",
+              "urlValue": "={{ $json.content.html_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3420,
+        1395
+      ],
+      "id": "b9d457f5-3e74-4a0b-9ad5-2c64b55224e9",
+      "name": "create db page",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "import datetime\n# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  item.json.tags = [i['name'] for i in item.json.tags]\n  item.json.now_fmt = datetime.datetime.now().strftime('%y-%m-%d %H:%M:%S')\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        1245
+      ],
+      "id": "8aa1daf2-e070-4c01-adc1-87a4ee3f053b",
+      "name": "edit params"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "['workflow-definition']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2100,
+        1245
+      ],
+      "id": "4f0e45b0-b504-4324-8dd7-e82c61b2ac1a",
+      "name": "del param"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        1645
+      ],
+      "id": "7df9cf91-307a-4c55-8b55-79acab6b64e7",
+      "name": "pass"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2540,
+        1445
+      ],
+      "id": "53004be5-0f2b-43f6-95d5-44edb7ee560a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        4080,
+        1370
+      ],
+      "id": "e17e86ee-8c79-40d8-8127-4f736852747c"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3200,
+        1320
+      ],
+      "id": "7eec543f-b3c6-4bcc-82e1-89029a83d7bc",
+      "name": "merge2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "78c5757a-370c-4d6e-87cf-d6325f2782fc",
+              "name": "db_page_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3200,
+        1120
+      ],
+      "id": "65d6ea06-f5c1-43cc-9628-ff28862d1e60",
+      "name": "set page id"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b180ccfe-1fe9-4389-9b59-92982ab24f90",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2980,
+        1195
+      ],
+      "id": "a0d5bc0a-0f93-4af8-9046-725d84e637e9",
+      "name": "found"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.db_page_id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "url|url",
+              "urlValue": "={{ $json.content.html_url }}"
+            },
+            {
+              "key": "tag|multi_select",
+              "multiSelectValue": "={{ $json.tags }}"
+            },
+            {
+              "key": "last_update_fmt|rich_text",
+              "textContent": "={{ $json.now_fmt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3640,
+        1195
+      ],
+      "id": "bfa9d5b1-af40-4da7-b301-2271ddaf3e64",
+      "name": "create db page2",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3420,
+        1195
+      ],
+      "id": "b9f78fd1-3c24-4eb8-b990-444752089f30",
+      "name": "merge3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.debugHelper",
+      "typeVersion": 1,
+      "position": [
+        3860,
+        1195
+      ],
+      "id": "4ac11b0d-722c-4763-b9fb-2b8e94c9c5cb",
+      "name": "DebugHelper",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "={{ $json.db_id }}",
+          "mode": "id"
+        },
+        "returnAll": true,
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
+            {
+              "key": "name|title",
+              "condition": "equals",
+              "titleValue": "={{ $json.content.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2760,
+        1195
+      ],
+      "id": "9b204973-abcd-4cdd-8ab7-816f8632eb46",
+      "name": "find page",
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "edd39c20-c203-4821-b053-03779744b44f",
+              "leftValue": "={{ $json.updatedAt }}",
+              "rightValue": "={{ $now.minus({days: 7}) }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            },
+            {
+              "id": "9fe0e0ee-3fd5-4f91-a097-b0f497889303",
+              "leftValue": "={{ $json.active }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        1645
+      ],
+      "id": "59866dec-97e1-4de4-b579-0202e3f1dbad",
+      "name": "keep last 7 days"
+    }
+  ],
+  "connections": {
+    "Discord": {
+      "main": [
+        []
+      ]
+    },
+    "Every Monday at 1am": {
+      "main": [
+        [
+          {
+            "node": "get all workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get all workflows": {
+      "main": [
+        [
+          {
+            "node": "keep last 7 days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set data fields": {
+      "main": [
+        [
+          {
+            "node": "try to update",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "edit params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "try to update": {
+      "main": [
+        [
+          {
+            "node": "update database",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "not exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_new": {
+      "main": [
+        [
+          {
+            "node": "update database",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "not exists": {
+      "main": [
+        [
+          {
+            "node": "create_new",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update database": {
+      "main": [
+        [
+          {
+            "node": "db",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "pass",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "db": {
+      "main": [
+        [
+          {
+            "node": "get db id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get db id": {
+      "main": [
+        [
+          {
+            "node": "merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "edit params": {
+      "main": [
+        [
+          {
+            "node": "del param",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "del param": {
+      "main": [
+        [
+          {
+            "node": "merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pass": {
+      "main": [
+        [
+          {
+            "node": "merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "find page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "merge2",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create db page": {
+      "main": [
+        [
+          {
+            "node": "DebugHelper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "merge2": {
+      "main": [
+        [
+          {
+            "node": "create db page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "found": {
+      "main": [
+        [
+          {
+            "node": "set page id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set page id": {
+      "main": [
+        [
+          {
+            "node": "merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "merge3": {
+      "main": [
+        [
+          {
+            "node": "create db page2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create db page2": {
+      "main": [
+        [
+          {
+            "node": "DebugHelper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DebugHelper": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "find page": {
+      "main": [
+        [
+          {
+            "node": "found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "keep last 7 days": {
+      "main": [
+        [
+          {
+            "node": "set data fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Every Monday at 1am": {
+      "recurrenceRules": [
+        12
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "978dfc4b-4009-4efa-92fb-1c64d05234e6",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2025-06-15T07:15:53.533Z",
+      "updatedAt": "2025-06-15T07:15:53.533Z",
+      "id": "IdmwSqVN0qsBEGBm",
+      "name": "on production"
+    },
+    {
+      "createdAt": "2025-06-15T02:26:16.103Z",
+      "updatedAt": "2025-06-15T02:26:16.103Z",
+      "id": "wMv4vy6w64wHpbzV",
+      "name": "function"
+    }
+  ]
+}
