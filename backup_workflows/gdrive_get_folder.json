@@ -1,0 +1,770 @@
+{
+  "createdAt": "2025-06-23T13:39:27.172Z",
+  "updatedAt": "2025-06-24T05:01:26.000Z",
+  "id": "yE569uFHkfwJOtYq",
+  "name": "gdrive_get_folder",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "folder_name"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -280,
+        140
+      ],
+      "id": "aad6a490-9181-4a7f-a6b5-0181adb9e00e",
+      "name": "When Executed by Another Workflow",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "bd04d6fe-3c46-48c1-9a6e-f61abee38301"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "exists"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "22e8b7e9-4713-4e2b-9269-16ec766f514c",
+                    "leftValue": "={{ $json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not exists"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        380,
+        40
+      ],
+      "id": "8430d461-b96f-4d7d-ac2d-37873eadbc85",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        600,
+        -110
+      ],
+      "id": "6933d257-e3bc-4843-b337-d28609a8fa0a",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        600,
+        190
+      ],
+      "id": "14b02cf3-623c-4134-b5e5-477e26ee7e89",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        380,
+        -160
+      ],
+      "id": "84b8b4a0-a12f-4aa8-a18f-c4cdb5f957d6",
+      "name": "pass"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        380,
+        240
+      ],
+      "id": "58affd46-6a7d-44e2-847f-33701c5d04c0",
+      "name": "pass1"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "n8n_gdrive",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {
+          "folderColorRgb": "#9D53DE"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        820,
+        265
+      ],
+      "id": "4542d307-d333-45ef-aacc-e99c435a891d",
+      "name": "create parent dir",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "n8n_gdrive",
+        "returnAll": true,
+        "filter": {
+          "whatToSearch": "folders",
+          "includeTrashed": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        160,
+        40
+      ],
+      "id": "54dec037-91c7-4dcd-b8b5-13520d4aa0aa",
+      "name": "find parent dir",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.folder_name }}",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.parent_id }}",
+            "mode": "id"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1480,
+        -60
+      ],
+      "id": "3707519b-2544-49ff-95a7-9b07ba324139",
+      "name": "find exists sub dir",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -110
+      ],
+      "id": "a06926df-9d07-4ea6-b06e-aebabce7cfb0",
+      "name": "pass2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1920,
+        115
+      ],
+      "id": "dedf0906-a461-4e21-b6ac-429b5f483fa8",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4927cd19-e3f6-49b5-a379-16d80cdb97c6",
+              "name": "parent_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "0f220f0c-8131-4942-8be0-5e51ac794637",
+              "name": "folder_name",
+              "value": "={{ $json.folder_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1260,
+        40
+      ],
+      "id": "28ff4188-9ff0-4ce3-9999-dd7c82b44238",
+      "name": "parent id"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "bd04d6fe-3c46-48c1-9a6e-f61abee38301"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "exists"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "22e8b7e9-4713-4e2b-9269-16ec766f514c",
+                    "leftValue": "={{ $json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "not exists"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1700,
+        -60
+      ],
+      "id": "59b499d5-fab1-4580-8e23-186ccbc6986f",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        165
+      ],
+      "id": "1591397e-42ab-4001-9f54-a01d5b275a6b",
+      "name": "pass3"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.folder_name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.parent_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2140,
+        115
+      ],
+      "id": "84bcc999-bbed-4a8d-abb2-a14108c30f11",
+      "name": "create sub dir",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "folder_name!!!"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        160,
+        390
+      ],
+      "id": "2f691256-2263-424a-b404-94a1fffa6f95",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9ec1407c-34ab-43c7-9217-cd9baeb95994",
+              "leftValue": "={{ $json.folder_name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        140
+      ],
+      "id": "29d21877-5b00-4c13-8613-d22daa545953",
+      "name": "check"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1040,
+        190
+      ],
+      "id": "e68ab438-6dbc-4978-821b-90452d9ce6bd",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4927cd19-e3f6-49b5-a379-16d80cdb97c6",
+              "name": "gdrive_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "0f220f0c-8131-4942-8be0-5e51ac794637",
+              "name": "gdrive_name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2360,
+        40
+      ],
+      "id": "629e98a9-b2f0-49a2-9089-090e042d14df",
+      "name": "Set Output Data",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2560,
+        40
+      ],
+      "id": "918ecf4d-8bab-4e8a-88be-305550145e04",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "pass2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "create parent dir",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pass": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pass1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "find parent dir": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create parent dir": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "pass2": {
+      "main": [
+        [
+          {
+            "node": "parent id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "find exists sub dir": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parent id": {
+      "main": [
+        [
+          {
+            "node": "pass3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "find exists sub dir",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "create sub dir",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Set Output Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pass3": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "create sub dir": {
+      "main": [
+        [
+          {
+            "node": "Set Output Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check": {
+      "main": [
+        [
+          {
+            "node": "find parent dir",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "pass",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "pass1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "parent id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Output Data": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8279b4b7-5955-45f5-b3a8-fb29723bbb57",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-15T02:26:16.103Z",
+      "updatedAt": "2025-06-15T02:26:16.103Z",
+      "id": "wMv4vy6w64wHpbzV",
+      "name": "function"
+    }
+  ]
+}
