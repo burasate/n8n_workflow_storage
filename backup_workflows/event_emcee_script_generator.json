@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-18T13:34:32.411Z",
-  "updatedAt": "2025-06-20T22:37:00.000Z",
+  "updatedAt": "2025-06-24T12:00:11.000Z",
   "id": "hmw1U9NHZWMINTuD",
   "name": "event_emcee_script_generator",
   "active": false,
@@ -635,14 +635,14 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "aa8e7b6e-b109-42e8-888d-99c31bcc27f9",
+  "versionId": "f12b6f4b-768d-490b-9575-2a1130ae20bc",
   "triggerCount": 0,
   "tags": [
     {
-      "createdAt": "2025-06-14T16:35:00.314Z",
-      "updatedAt": "2025-06-14T16:35:00.314Z",
-      "id": "FLY23u7lZ3euVVMc",
-      "name": "experimental"
+      "createdAt": "2025-06-15T07:15:53.533Z",
+      "updatedAt": "2025-06-15T07:15:53.533Z",
+      "id": "IdmwSqVN0qsBEGBm",
+      "name": "on production"
     }
   ]
 }
