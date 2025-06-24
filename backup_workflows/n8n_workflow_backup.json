@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-06-15T03:16:10.237Z",
-  "updatedAt": "2025-06-24T08:43:33.000Z",
+  "updatedAt": "2025-06-24T08:45:32.000Z",
   "id": "6JYkJBc0dW0GLvIi",
   "name": "n8n_workflow_backup",
   "active": true,
@@ -622,16 +622,6 @@
                 "type": "dateTime",
                 "operation": "after"
               }
-            },
-            {
-              "id": "9fe0e0ee-3fd5-4f91-a097-b0f497889303",
-              "leftValue": "={{ $json.active }}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
             }
           ],
           "combinator": "or"
@@ -646,6 +636,39 @@
       ],
       "id": "59866dec-97e1-4de4-b579-0202e3f1dbad",
       "name": "keep last 7 days"
+    },
+    {
+      "parameters": {
+        "filters": {
+          "activeWorkflows": true
+        },
+        "requestOptions": {}
+      },
+      "id": "bcbaf768-6b16-4a21-a1ae-a3002f5d8f20",
+      "name": "get actives",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        340,
+        1840
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "8JxYcgciM6o7vOtg",
+          "name": "n8n localhost api"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        700,
+        1820
+      ],
+      "id": "197a2d8c-041a-4352-bbd6-03ea1dcde6c2",
+      "name": "Merge"
     }
   ],
   "connections": {
@@ -659,6 +682,11 @@
         [
           {
             "node": "get all workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get actives",
             "type": "main",
             "index": 0
           }
@@ -953,6 +981,28 @@
       "main": [
         [
           {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get actives": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
             "node": "set data fields",
             "type": "main",
             "index": 0
@@ -975,7 +1025,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "978dfc4b-4009-4efa-92fb-1c64d05234e6",
+  "versionId": "254f4dbd-38da-4c50-8d51-8a157d9c306d",
   "triggerCount": 1,
   "tags": [
     {
