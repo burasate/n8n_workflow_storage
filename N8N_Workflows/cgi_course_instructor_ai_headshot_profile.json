@@ -1,22 +1,11 @@
 {
   "createdAt": "2025-06-23T02:56:17.741Z",
-  "updatedAt": "2025-06-23T06:33:29.000Z",
+  "updatedAt": "2025-06-24T05:16:49.000Z",
   "id": "Hl1Akvj7lz5EEDSZ",
   "name": "cgi_course_instructor_ai_headshot_profile",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        0,
-        70
-      ],
-      "id": "5e1faf19-f793-4596-9e6e-42f4a5b5fb6a",
-      "name": "When clicking ‘Execute workflow’"
-    },
     {
       "parameters": {
         "resource": "databasePage",
@@ -34,8 +23,8 @@
       "type": "n8n-nodes-base.notion",
       "typeVersion": 2.2,
       "position": [
-        220,
-        70
+        -1300,
+        245
       ],
       "id": "d67559e8-ece3-4db2-a9c7-aa1fdcadf9b1",
       "name": "get_instructors",
@@ -53,8 +42,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        660,
-        70
+        -860,
+        245
       ],
       "id": "ee3bc716-8dde-42a7-90e4-c31d37cca2d8",
       "name": "Loop Over Items"
@@ -65,8 +54,8 @@
       "name": "Replace Me",
       "typeVersion": 1,
       "position": [
-        3080,
-        420
+        4136,
+        820
       ],
       "id": "e76f729a-64f6-475f-8f3c-de191079272f"
     },
@@ -76,8 +65,8 @@
       "name": "done",
       "typeVersion": 1,
       "position": [
-        880,
-        -180
+        -640,
+        20
       ],
       "id": "ec238f9a-0830-48d2-a95e-5a1cf1d6f688"
     },
@@ -92,12 +81,22 @@
           },
           "conditions": [
             {
-              "id": "090c7b34-f911-41f5-962e-2a9255448054",
-              "leftValue": "={{ $json.property_selfie_image_url }}",
+              "id": "3433d843-d866-4d58-a8c0-207d21f0073b",
+              "leftValue": "={{ $json.property_ai_generate_ready }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9680aff1-ec49-42cb-815d-d72c6e3a26b2",
+              "leftValue": "={{ $json.property_ai_image_url }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
-                "operation": "notEmpty",
+                "operation": "empty",
                 "singleValue": true
               }
             }
@@ -109,8 +108,8 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        440,
-        70
+        -1080,
+        245
       ],
       "id": "e61ed514-d69f-4ba6-9a52-1612d333bdb5",
       "name": "has profile url"
@@ -120,8 +119,8 @@
       "type": "n8n-nodes-base.debugHelper",
       "typeVersion": 1,
       "position": [
-        2860,
-        145
+        3916,
+        745
       ],
       "id": "0202d7b5-7106-4544-92e7-78acd0576294",
       "name": "DebugHelper",
@@ -129,273 +128,33 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.property_selfie_image_url }}",
+        "url": "={{ $json.property_image_url_1 }}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        880,
-        20
+        -342,
+        -155
       ],
       "id": "ef3c9e5a-0924-46fc-b998-b3f3e1a2fc7d",
       "name": "get image"
     },
     {
       "parameters": {
-        "url": "={{ $json.property_style_ref_url }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        880,
-        320
-      ],
-      "id": "96ee1b1f-1bb6-4e36-b3a5-4323a67acaf2",
-      "name": "get ref"
-    },
-    {
-      "parameters": {
-        "operation": "binaryToPropery",
-        "destinationKey": "style_b64",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        1100,
-        320
-      ],
-      "id": "ad87c347-f68f-4d32-adb2-a43f90a1dfba",
-      "name": "b64_ref"
-    },
-    {
-      "parameters": {
         "mode": "combine",
         "combineBy": "combineByPosition",
-        "numberInputs": 3,
+        "numberInputs": 4,
         "options": {}
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1320,
-        145
+        176,
+        224
       ],
       "id": "d404784f-5dae-40be-898e-82e46b222f2a",
       "name": "Merge"
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.property_ai_image_style }}",
-                    "rightValue": "professional",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "e77b3385-353b-4561-8e5c-b581e38ca794"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "professional"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "37b41991-6244-457c-841c-98f79b346969",
-                    "leftValue": "={{ $json.property_ai_image_style }}",
-                    "rightValue": "modern",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "modern"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "c7213ee2-bda9-4b69-91a9-ece514f2a1b8",
-                    "leftValue": "={{ $json.property_ai_image_style }}",
-                    "rightValue": "refined",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "refined"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        1540,
-        145
-      ],
-      "id": "af591af7-5f9e-4aa0-bd4d-815dbd3d8b7c",
-      "name": "Switch"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "name": "pass",
-      "typeVersion": 1,
-      "position": [
-        2200,
-        145
-      ],
-      "id": "1e55fa1d-d685-469e-8516-2602bd3fdfe3"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/images/edits",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "model",
-              "value": "gpt-image-1"
-            },
-            {
-              "name": "prompt",
-              "value": "=Take the person on the right and style it like the left image. Do not change face identity. Subject should be\nslightly turned towards the camera like the person in the left photo. Wearing a light-\nlored shirt, with a natural smile and warm eye contact. Illuminated by bright, al\nlighting against a neutral or softly graduated background, creating a fresh, open\natmosphere. Their expression conveys approachability and confidence with a relaxed\ngaze. Contemporary portrait photography. Shot with a Sony Alpha A7 III and an f/2\nlens. Photorealistic, 8k. Square aspect ratio (1:1)."
-            },
-            {
-              "parameterType": "formBinaryData",
-              "name": "image[]",
-              "inputDataFieldName": "=style_data"
-            },
-            {
-              "parameterType": "formBinaryData",
-              "name": "image[]",
-              "inputDataFieldName": "profile_data"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1980,
-        70
-      ],
-      "id": "79de9180-cd48-4699-8ded-fab86cc26297",
-      "name": "image gen modern",
-      "credentials": {
-        "openAiApi": {
-          "id": "OWBmhC44Dxoxd8qx",
-          "name": "Personal - n8n connect"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/images/edits",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "model",
-              "value": "gpt-image-1"
-            },
-            {
-              "name": "prompt",
-              "value": "=Keep the person on the right and style it like the left image. Do not change face identity. Subject sh\nightly towards the camera like the person in the left photo. Wearin\nubtle smile and gentle eye contact.  Illuminated by soft studio 1\ngainst a dark background, creating depth of field that highlights deta\ncial texture or fine lines on their face. Their gaze reflects calmess\ngazes into space. Portrait photography. Shot with a Sony Alpha A7 III and an f/2\nlens. Photorealistic, 8k. Square aspect ratio (1:1)."
-            },
-            {
-              "parameterType": "formBinaryData",
-              "name": "image[]",
-              "inputDataFieldName": "=style_data"
-            },
-            {
-              "parameterType": "formBinaryData",
-              "name": "image[]",
-              "inputDataFieldName": "profile_data"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1980,
-        320
-      ],
-      "id": "2ddb077e-47d7-4c0b-bcb2-308352300b80",
-      "name": "image gen refined",
-      "credentials": {
-        "openAiApi": {
-          "id": "OWBmhC44Dxoxd8qx",
-          "name": "Personal - n8n connect"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "binaryToPropery",
-        "destinationKey": "profile_b64",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        1100,
-        20
-      ],
-      "id": "809f7f16-d098-4879-a1b9-2b14de21a9b4",
-      "name": "b64_profile"
     },
     {
       "parameters": {
@@ -407,9 +166,33 @@
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
-          "value": {},
+          "value": {
+            "img1_b64": "={{ $json.img1_b64 }}",
+            "img2_b64": "={{ $json.img2_b64 }}"
+          },
           "matchingColumns": [],
-          "schema": [],
+          "schema": [
+            {
+              "id": "img1_b64",
+              "displayName": "img1_b64",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "img2_b64",
+              "displayName": "img2_b64",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": true
         },
@@ -418,62 +201,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1760,
-        -130
-      ],
-      "name": "concat multiple binary3",
-      "id": "bfd00698-6d08-4cbf-b8c5-ba8a8c673a46"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "NkdZphjGXBfOUYB0",
-          "mode": "list",
-          "cachedResultName": "My Sub-workflow"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        1760,
-        70
-      ],
-      "name": "concat multiple binary",
-      "id": "fb400f07-bb3b-4627-9906-5d5b96be2b5e"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "NkdZphjGXBfOUYB0",
-          "mode": "list",
-          "cachedResultName": "My Sub-workflow"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        1760,
-        320
+        396,
+        45
       ],
       "name": "concat multiple binary4",
       "id": "252214d8-d471-4620-b846-05fd39159596"
@@ -482,16 +211,492 @@
       "parameters": {
         "operation": "toBinary",
         "sourceProperty": "data[0].b64_json",
+        "binaryPropertyName": "img_data",
         "options": {}
       },
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        2420,
-        145
+        1936,
+        770
       ],
       "id": "f9ff9e55-039d-4a80-ae3a-8ae5f07cc545",
       "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "yE569uFHkfwJOtYq",
+          "mode": "list",
+          "cachedResultName": "gdrive_get_folder"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "folder_name": "cgi_course_instructor_profile"
+          },
+          "matchingColumns": [
+            "folder_name"
+          ],
+          "schema": [
+            {
+              "id": "folder_name",
+              "displayName": "folder_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1496,
+        -180
+      ],
+      "id": "ab5e988b-eeed-4c53-a2fc-386b785ed143",
+      "name": "get gdrive folder",
+      "alwaysOutputData": true,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2156,
+        320
+      ],
+      "id": "6c5ce3c2-9d23-4372-9d26-6182da1eb410",
+      "name": "Merge1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1496,
+        20
+      ],
+      "id": "6e392648-39c6-4599-ba13-ba98d26ba19a",
+      "name": "Wait",
+      "webhookId": "a9a320d3-7645-400f-9884-9026c9fe6d29"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.folder_name }}",
+        "returnAll": true,
+        "filter": {
+          "includeTrashed": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1716,
+        20
+      ],
+      "id": "7eea1006-da3b-476e-811d-5f9301252278",
+      "name": "get dir",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "img_data",
+        "name": "={{ $json.id }}_profile.jpg",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.gdrive_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3256,
+        145
+      ],
+      "id": "47597721-d1ab-4f6d-ae76-f941ae2715dd",
+      "name": "upload",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1056,
+        270
+      ],
+      "id": "af9beb66-84db-4e94-bba1-0284d93f429f",
+      "name": "Merge2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bb4bd474-3c36-4feb-bb27-60fe842bf319",
+              "name": "folder_name",
+              "value": "cgi_course_instructor_profile",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1276,
+        20
+      ],
+      "id": "d0ee7f3d-7a3c-4fa5-8e43-58fdd846267c",
+      "name": "folder name"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bb4bd474-3c36-4feb-bb27-60fe842bf319",
+              "name": "gdrive_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "4829b78a-5c11-44b9-8e4e-cc153ce22b1e",
+              "name": "gdrive_name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1936,
+        20
+      ],
+      "id": "25d05546-8d96-400b-9003-6c48a5b5d903",
+      "name": "set"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.img_file_name }}",
+        "returnAll": true,
+        "filter": {
+          "includeTrashed": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2376,
+        170
+      ],
+      "id": "d2cab32b-1a1a-424d-a01c-f9629f9118af",
+      "name": "Google Drive",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04ad8cf0-7a3a-4649-b2bd-ee2c49be5b4e",
+              "name": "img_file_name",
+              "value": "={{ $json.id }}_profile.jpg",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1936,
+        220
+      ],
+      "id": "50590903-f5ec-4f44-bbd0-17b1488259f4",
+      "name": "img name"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "138dee67-6e45-4c9b-9501-1bfc766377d8",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2596,
+        170
+      ],
+      "id": "c43cb6e6-9312-499e-b75b-5b9f1110a632",
+      "name": "exists"
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2816,
+        70
+      ],
+      "id": "bae6cfc6-e6b7-412e-b515-e41a8c711c3e",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "40ftcBIIiCywVBjY",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3036,
+        245
+      ],
+      "id": "7361293d-dc3b-46ff-aedc-4b230a195858",
+      "name": "Merge3",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -332,
+        365
+      ],
+      "id": "6d2d202b-b60f-48a7-903a-0aa8d6a14656",
+      "name": "3.5 turbo",
+      "credentials": {
+        "openAiApi": {
+          "id": "OWBmhC44Dxoxd8qx",
+          "name": "Personal - n8n connect"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Gender: {{ $json.property_gender_label }}\nStyle/Look: {{ $json.property_ai_image_style }}",
+        "options": {
+          "systemMessage": "=## Overall\nYou are an expert outfit stylist, you will get information about gender and outfit style. You will imagine that you are wearing something that relate with {{ $json.property_ai_image_style }} style. You just pick only one outfit. Then Explain the clothes you are dressing only upper body.\n\nAvoid: \n- Sun glasses\n- All Black."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        145
+      ],
+      "id": "cce922cf-1365-4937-b15b-faed496f3af4",
+      "name": "Stylist Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ee777354-2db7-489b-8888-c509d10b3dd2",
+              "name": "outfit_prompt",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -44,
+        145
+      ],
+      "id": "02c798bf-5102-4e44-8463-6fe6fc74a0d5",
+      "name": "outfit prompt"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.property_image_url_2 }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -342,
+        770
+      ],
+      "id": "96ee1b1f-1bb6-4e36-b3a5-4323a67acaf2",
+      "name": "get image "
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "destinationKey": "img1_b64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -44,
+        -155
+      ],
+      "id": "809f7f16-d098-4879-a1b9-2b14de21a9b4",
+      "name": "b64_img1_"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "destinationKey": "img2_b64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -44,
+        770
+      ],
+      "id": "ad87c347-f68f-4d32-adb2-a43f90a1dfba",
+      "name": "b64_img2_"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "pass",
+      "typeVersion": 1,
+      "position": [
+        -44,
+        570
+      ],
+      "id": "0a5d7ed4-3902-491e-bece-236c49ebcd5f"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        616,
+        120
+      ],
+      "id": "be93e68d-b27f-40b7-9fb9-a8b893abaa93",
+      "name": "Merge4",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "pass1",
+      "typeVersion": 1,
+      "position": [
+        836,
+        670
+      ],
+      "id": "7f543930-ca65-4c23-8f2f-0870df7f9c16"
     },
     {
       "parameters": {
@@ -509,17 +714,25 @@
             },
             {
               "name": "prompt",
-              "value": "=Take the person on the right and restyle their appearance to match the aesthetic of the left image without altering their facial features or identity. Do not change or blend their face—retain all distinct facial characteristics exactly as in the original. The subject should be slightly turned toward the camera like the person in the left photo. Dress them in a business casual outfit with subtle patterns or textures. They should display a confident smile and make direct eye contact. Use crisp, professional lighting with soft fill to reduce shadows, and place them against a subtly textured or gradient light background. The expression should convey both expertise and approachability. The image should be an executive portrait with editorial polish, shot as if using a Sony Alpha A7 III with an f/1.8 lens. Final output should be photorealistic, in 8K resolution, with a square (1:1) aspect ratio. Emphasize face preservation—do not morph or stylize the face beyond lighting and angle adjustment."
+              "value": "=Profile shot of me walking through\na rushing crowd. at Bangkok skyscapes area.\nstanding still a brick city sidesalk,\n{{ $json.outfit_prompt }},\nmotion-blurred crowd rushes past\naround me moody lighting 35mm film\nlook. Shallow depth of field, sharp focus. Ambient lighting comes\nfrom the sun. looking at the camera.\non me. standing center for the crowd. a bit wider.\n3/4 profile side.\nRatio potrait 1:1\n\nImportant note:\nPreserve the person’s face identity exactly as shown. Do not alter face structure, nose, eyes, or skin tone. Stylize outfit and background only.\n\n\n"
             },
             {
               "parameterType": "formBinaryData",
               "name": "image[]",
-              "inputDataFieldName": "style_data"
+              "inputDataFieldName": "img_data1"
             },
             {
               "parameterType": "formBinaryData",
               "name": "image[]",
-              "inputDataFieldName": "profile_data"
+              "inputDataFieldName": "img_data2"
+            },
+            {
+              "name": "size",
+              "value": "auto"
+            },
+            {
+              "name": "quality",
+              "value": "medium"
             }
           ]
         },
@@ -528,11 +741,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1980,
-        -130
+        836,
+        120
       ],
-      "id": "07645bdc-e84b-4ce3-83b6-5452455e33b7",
-      "name": "image gen professional",
+      "id": "d0984acb-0694-4498-bdb7-383b0a71c7dc",
+      "name": "gpt image one",
       "credentials": {
         "openAiApi": {
           "id": "OWBmhC44Dxoxd8qx",
@@ -542,49 +755,132 @@
     },
     {
       "parameters": {
-        "name": "=output_99.jpg",
-        "driveId": {
+        "operation": "share",
+        "fileId": {
           "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
+          "value": "={{ $json.id }}",
+          "mode": "id"
         },
-        "folderId": {
-          "__rl": true,
-          "value": "1Kr1KCrm67yWuuNvJ20bbfQt0O89B0QaM",
-          "mode": "list",
-          "cachedResultName": "Temp",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1Kr1KCrm67yWuuNvJ20bbfQt0O89B0QaM"
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone",
+            "allowFileDiscovery": true
+          }
         },
         "options": {}
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        2640,
-        145
+        3476,
+        95
       ],
-      "id": "47597721-d1ab-4f6d-ae76-f941ae2715dd",
-      "name": "Google Drive",
+      "id": "8e18b0a7-3d61-49f9-9252-e4bf2f2c866e",
+      "name": "Google Drive2",
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "40ftcBIIiCywVBjY",
           "name": "n8n google oauth2"
         }
       }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.page_id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "ai_image_url|url",
+              "urlValue": "={{ $json.webViewLink }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        3696,
+        745
+      ],
+      "id": "fe721654-6dbe-44c3-9115-17d91f436282",
+      "name": "Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ee777354-2db7-489b-8888-c509d10b3dd2",
+              "name": "page_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -640,
+        220
+      ],
+      "id": "1d898b07-ffe2-4108-afd8-424f041db76f",
+      "name": "page_id"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3476,
+        745
+      ],
+      "id": "586b0eed-34c2-46f2-bf20-a9f2e1bb5874",
+      "name": "Merge5",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1520,
+        245
+      ],
+      "id": "90f80385-37bd-472e-a947-00c067b0f06f",
+      "name": "Schedule Trigger"
     }
   ],
   "connections": {
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "get_instructors",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "get_instructors": {
       "main": [
         [
@@ -607,19 +903,9 @@
         ],
         [
           {
-            "node": "get image",
+            "node": "page_id",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "get ref",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -661,31 +947,9 @@
       "main": [
         [
           {
-            "node": "b64_profile",
+            "node": "b64_img1_",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "get ref": {
-      "main": [
-        [
-          {
-            "node": "b64_ref",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "b64_ref": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 2
           }
         ]
       ]
@@ -694,76 +958,17 @@
       "main": [
         [
           {
-            "node": "Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch": {
-      "main": [
-        [
-          {
-            "node": "concat multiple binary3",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "concat multiple binary",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
             "node": "concat multiple binary4",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "pass": {
-      "main": [
-        [
+          },
           {
-            "node": "Convert to File",
+            "node": "Merge4",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "image gen modern": {
-      "main": [
-        [
+            "index": 1
+          },
           {
-            "node": "pass",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "image gen refined": {
-      "main": [
-        [
-          {
-            "node": "pass",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "b64_profile": {
-      "main": [
-        [
-          {
-            "node": "Merge",
+            "node": "pass1",
             "type": "main",
             "index": 0
           }
@@ -774,29 +979,7 @@
       "main": [
         [
           {
-            "node": "image gen refined",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "concat multiple binary": {
-      "main": [
-        [
-          {
-            "node": "image gen modern",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "concat multiple binary3": {
-      "main": [
-        [
-          {
-            "node": "image gen professional",
+            "node": "Merge4",
             "type": "main",
             "index": 0
           }
@@ -807,20 +990,127 @@
       "main": [
         [
           {
-            "node": "Google Drive",
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "get gdrive folder": {
+      "main": [
+        []
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "get dir",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "image gen professional": {
+    "get dir": {
       "main": [
         [
           {
-            "node": "pass",
+            "node": "set",
             "type": "main",
             "index": 0
+          }
+        ]
+      ]
+    },
+    "upload": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "folder name",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "img name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "folder name": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get gdrive folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "img name": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
@@ -829,7 +1119,226 @@
       "main": [
         [
           {
+            "node": "exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "exists": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "upload",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "3.5 turbo": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Stylist Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stylist Agent": {
+      "main": [
+        [
+          {
+            "node": "outfit prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "outfit prompt": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "get image ": {
+      "main": [
+        [
+          {
+            "node": "b64_img2_",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "b64_img1_": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "b64_img2_": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "pass": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "gpt image one",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pass1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "gpt image one": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        []
+      ]
+    },
+    "Notion": {
+      "main": [
+        [
+          {
             "node": "DebugHelper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "page_id": {
+      "main": [
+        [
+          {
+            "node": "get image",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Stylist Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "pass",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get image ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get_instructors",
             "type": "main",
             "index": 0
           }
@@ -840,13 +1349,17 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "c7407b61-6234-40d1-82e6-84a9ba35fc6e",
-  "triggerCount": 0,
+  "versionId": "7a3ceea4-f235-4e1c-b2da-8b676b0f6174",
+  "triggerCount": 1,
   "tags": [
     {
       "createdAt": "2025-06-14T16:35:00.314Z",
