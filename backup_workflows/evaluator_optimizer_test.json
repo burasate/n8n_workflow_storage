@@ -1,0 +1,344 @@
+{
+  "createdAt": "2025-06-18T03:41:02.652Z",
+  "updatedAt": "2025-06-19T19:18:36.000Z",
+  "id": "hG5lGXyXavctF8vV",
+  "name": "evaluator-optimizer_test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -316,
+        455
+      ],
+      "id": "471d6637-d4ec-4389-baf2-41d1b1ff9217",
+      "name": "4o mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "OWBmhC44Dxoxd8qx",
+          "name": "Personal - n8n connect"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Writing Content: [{{ $json.content }}]\nPlease give the feedback from the essay above.",
+        "options": {
+          "systemMessage": "=## โดยรวม\nคุณคือผู้เชี่ยวชาญด้านการประเมินในเรื่องของการเขียนบทความ\n\n## เกณฑ์\nโปรดตรวจสอบให้แน่ใจว่า\n- ทุกอย่างจะต้องเป็นภาษาไทย\n- เช็คว่าตัวสะกดถูกต้องหรือไม่\n- ดูว่าตรงกับวัตถุประสงค์ข้อการตลาดหรือไม่\n- ใช้คำให้มีความเป็นกันเอง และชวนสงสัย\n- ทิ้งคำถามไว้ให้ผู้อ่านเสมอว่าเห็นด้วยหรือไม่\n- ใช้น้ำเสียงหรือโทนที่เป็นเหมือนคนพิมพ์ความรู้สึกนึ้ขึ้นมาจริง\n- ใช้คำที่เข้าใจง่ายที่สุด\n- เนื้อหาไม่ควรสั้นจนเกินไป\n- ใช้คำว่า \"เรา\" แทน \"ฉัน\" และอื่นๆที่เป็นธรมมชาติของผู้บรรยาย\n- ใช้ Jargon\n- ทั้งบทความจะมีบรรทัด [เกริ่นนำ, เนื้อหา, สรุป]\n\n## ผลลัพธ์\nอย่างใดอย่างหนึ่ง\nA. คุณเพียงแค่ต้องให้ความเห็นว่าควรจะต้องปรับแก้ตรงไหนบ้าง\nB. ถ้าหากทุกอย่างถูกต้องทั้งหมดให้พิมพ์กลับมาแค่คำว่า \"Finished\" โดยที่ไม่ต้องมีคำอธิบายอื่นเพิ่มเติม"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -404,
+        235
+      ],
+      "id": "e5e0fe53-26e4-4f7c-a65c-78876d7a7a50",
+      "name": "Evaluator Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8d931f3d-b391-4be9-a50a-cc4a73c31b71",
+              "leftValue": "={{$runIndex}}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "20995831-114b-4cd3-92d2-b595f77ca708",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "Finished",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -28,
+        235
+      ],
+      "id": "5274b37b-80f1-4c73-bc1e-2e603eb0477b",
+      "name": "Evaluate"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Content: {{ $json.content }}\nFeedback: {{ $json.output }}",
+        "options": {
+          "systemMessage": "=## ภาพรวม\nคุณเป็นผู้เชี่ยวชาญด้านการเลือกใช้คำพูดให้ดีขึ้น งานของคุณคือนำเนื้อหาโพสมาปรับให้เหมาะสมตามคำติชม\nใช้ภาษาไทย\n\n## ผลลัพธ์\nส่งกลับมาแค่เนื้อหาที่ถูกปรับปรุงแล้ว ไม่ต้องมีคำอธิบาย"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        412,
+        560
+      ],
+      "id": "73cbde6c-da28-47c3-a5b0-c2698534913e",
+      "name": "Optimizer Agent"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "1JUzbgV0V7R1yYKj5ldX16gqcL8DFY6_r5iOQ2txLA80",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{\"\\n----\\n\"}}{{ $json.content }}{{\"\\n----\\n\"}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        490,
+        310
+      ],
+      "id": "9fb6261b-729b-4491-9fe4-184238bafbd5",
+      "name": "Push to Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7y3bs0qq7bWmbPK0",
+          "name": "n8n google oauth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "adf17d4d-a89e-4f97-9d31-5e74834428fc",
+              "name": "content",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -620,
+        480
+      ],
+      "id": "4b8e6ecb-dc81-4463-9f87-89aa91760e0c",
+      "name": "Set Bio"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=word: {{ $json.hook_words }}\ncontext: {{ $json.context }}",
+        "options": {
+          "systemMessage": "=คุณเป็นผู้ช่วยเล่าเรื่องที่เขียนเนื้อหาที่สะท้อนอารมณ์และจริงใจสำหรับโซเชียลมีเดียหรือโพสต์ในรูปแบบบทความ คุณจะได้รับ:\n- คำหรือวลีที่ดึงดูดใจ (ข้อความเชิงลบหรือที่กระตุ้นอารมณ์)\n- บริบทหรือสถานการณ์เพิ่มเติม (สิ่งที่เกิดขึ้น สิ่งที่ผู้ใช้ต้องการแสดงออก)\nใช้ข้อมูลนี้เพื่อสร้างโพสต์ที่น่าสนใจและเห็นอกเห็นใจ การเขียนควรเริ่มต้นด้วยความจริงเชิงลบที่ชัดเจน จากนั้นแนะนำผู้อ่านผ่านการไตร่ตรองในตนเอง ประสบการณ์ทางอารมณ์ร่วมกัน ข้อมูลเชิงลึกที่สร้างสรรค์ และสุดท้ายคือการแก้ปัญหาเชิงบวกหรือสร้างพลัง\n\nแนวทางเกี่ยวกับโทนเสียง:\n- ซื่อสัตย์ทางอารมณ์\n- สงบและไตร่ตรอง\n- เห็นอกเห็นใจ ไม่กล่าวโทษ\n- เชื่อมโยงได้และมีเหตุผล\n- จบด้วยความชัดเจน ความหวัง หรือขอบเขตที่เหมาะสม\n\n## โครงสร้างการเขียน:\n# HOOK – ความจริงเชิงลบ (ใช้คำนำหน้าที่มีให้):\nเริ่มโพสต์ด้วยคำนำหน้าที่มีให้ (เช่น “ความหลงใหลของฉันสิ้นสุดลงเมื่อฉันพบระบบการจัดการที่ผิด”) ควรยืนอยู่คนเดียวหรือนำไปสู่ประโยคถัดไปเพื่อดึงดูดความสนใจทางอารมณ์ได้ทันที # การไตร่ตรองตนเอง (ตามบริบท):\nอธิบายสถานการณ์โดยย่อและความรู้สึกที่ผู้พูดรู้สึก เน้นที่ผลกระทบทางอารมณ์มากกว่ารายละเอียด จริงใจและเป็นกันเอง\n# ประสบการณ์ร่วมกัน (เกี่ยวข้องกับหัวข้อที่กว้างขึ้น):\nเชื่อมโยงเรื่องราวกับปัญหาทั่วไปที่ผู้อื่นสามารถเกี่ยวข้องได้ (เช่น ภาวะหมดไฟ ความเป็นผู้นำที่ไม่ดี แรงงานทางอารมณ์) ใช้ภาษาที่ครอบคลุม เช่น \"พวกเราหลายคน\" \"พวกเรามักจะ\" หรือ \"คุณอาจรู้จักความรู้สึกนี้\"\n# จุดยืนเชิงสร้างสรรค์ (ข้อคิดเห็นที่อ่อนโยน):\nแบ่งปันความตระหนักรู้ที่สงบหรือความเข้าใจใหม่ หลีกเลี่ยงการตำหนิ น้ำเสียงควรให้ความรู้สึกฉลาด เช่น เป็นคนที่เติบโตขึ้นจากประสบการณ์นั้น\n# การปรับกรอบเชิงบวกหรือการตัดสินใจที่สร้างพลัง:\nจบด้วยการเปลี่ยนแปลงเชิงบวก เช่น ขอบเขต ทางเลือก หรือความเชื่อใหม่ที่นำมาซึ่งความสงบหรือความชัดเจน วิธีนี้ช่วยให้มั่นใจว่าเรื่องราวจะสร้างสรรค์และมีประโยชน์\n\n# คำถามปิดท้ายที่เป็นทางเลือก (เพื่อการมีส่วนร่วม):\nจบด้วยคำถามที่เป็นทางเลือกเพื่อสร้างการเชื่อมโยงและเชิญชวนให้มีการไตร่ตรองหรือตกลงกัน ตัวอย่าง: “คุณเคยรู้สึกแบบนี้ด้วยไหม” หรือ “อะไรช่วยให้คุณหลุดพ้นจากวังวนแบบนี้ได้”"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -1000,
+        480
+      ],
+      "id": "fdd173a7-5ce0-4851-80be-64ffd3e2bec4",
+      "name": "Draft Agent"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        192,
+        360
+      ],
+      "id": "4bc2675c-68c4-42cd-93e1-5be196dfd276",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        480
+      ],
+      "id": "4d7cae6a-81bc-4ded-9ec0-16571f8a6d18",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {
+    "4o mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Evaluator Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Optimizer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Draft Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluator Agent": {
+      "main": [
+        [
+          {
+            "node": "Evaluate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Optimizer Agent": {
+      "main": [
+        [
+          {
+            "node": "Set Bio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Bio": {
+      "main": [
+        [
+          {
+            "node": "Evaluator Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Draft Agent": {
+      "main": [
+        [
+          {
+            "node": "Set Bio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Optimizer Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Push to Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Draft Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "hook_words": "my passion is died because new manager unable to work along with the team",
+          "context": "employee expaining to bad managing system / select wrong people to be leadership"
+        }
+      }
+    ]
+  },
+  "versionId": "2a514b7e-ccdf-47ca-a131-d5027b5f6a59",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2025-06-14T16:35:33.641Z",
+      "updatedAt": "2025-06-14T16:35:33.641Z",
+      "id": "70WcGhZ8YlVSEiKN",
+      "name": "template/example"
+    }
+  ]
+}
