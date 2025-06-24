@@ -1,0 +1,102 @@
+{
+  "createdAt": "2025-06-15T02:25:26.923Z",
+  "updatedAt": "2025-06-15T02:33:44.000Z",
+  "id": "g3WPrnyPDyevJKP5",
+  "name": "get_now_format",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "outputFieldName": "now",
+        "options": {
+          "timezone": "UTC+7"
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -140
+      ],
+      "id": "d67c40af-e1a1-498a-9f71-7310c9e745b0",
+      "name": "now"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.now }}",
+        "format": "custom",
+        "customFormat": "yyyy-mm-dd HH:mm:ss",
+        "outputFieldName": "now_fmt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        220,
+        -140
+      ],
+      "id": "2f15e939-6264-4eae-a149-8f23c7488bec",
+      "name": "now_fmt"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "9e0d8cd4-aea3-451d-85c8-7355f0446731",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -220,
+        -140
+      ]
+    }
+  ],
+  "connections": {
+    "now": {
+      "main": [
+        [
+          {
+            "node": "now_fmt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "now_fmt": {
+      "main": [
+        []
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "now",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "55163c21-b4bb-49c8-adfb-5afe06a6eece",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-15T02:26:16.103Z",
+      "updatedAt": "2025-06-15T02:26:16.103Z",
+      "id": "wMv4vy6w64wHpbzV",
+      "name": "function"
+    }
+  ]
+}
