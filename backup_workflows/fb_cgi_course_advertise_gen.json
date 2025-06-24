@@ -1,0 +1,1470 @@
+{
+  "createdAt": "2025-06-15T07:05:11.797Z",
+  "updatedAt": "2025-06-23T06:48:21.000Z",
+  "id": "PGL33HaM0dOYdgHH",
+  "name": "fb_cgi_course_advertise_gen",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Nudge Marketing\nfor course / skill meet up",
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        1640
+      ],
+      "id": "0ea13183-bb22-41ac-ac21-eda84f65f2ef",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1816,
+        2270
+      ],
+      "id": "99dafc2e-d48f-41a1-9165-e6aa720348ec",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "inputText": "=## Course {{ $json.name }} for {{ $json.property_level }}\n{{ $json.property_introduction }}\n\n## Trending / News\n{{ $json.output }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "={{ $json.ad_style[0].title }}",
+              "description": "=Guidance:\n{{ $json.ad_style[0].hook }}\n{{ $json.ad_style[0].body }}\n{{ $json.ad_style[0].cta }}"
+            },
+            {
+              "category": "={{ $json.ad_style[1].title }}",
+              "description": "=Guidance: \n{{ $json.ad_style[1].hook }}\n{{ $json.ad_style[1].body }}\n{{ $json.ad_style[1].cta }}"
+            },
+            {
+              "category": "={{ $json.ad_style[2].title }}",
+              "description": "=Guidance:  {{ $json.ad_style[2].hook }} {{ $json.ad_style[2].body }} {{ $json.ad_style[2].cta }}"
+            },
+            {
+              "category": "={{ $json.ad_style[3].title }}",
+              "description": "=Guidance:  {{ $json.ad_style[3].hook }} {{ $json.ad_style[3].body }} {{ $json.ad_style[3].cta }}"
+            },
+            {
+              "category": "={{ $json.ad_style[4].title }}",
+              "description": "=Guidance:  {{ $json.ad_style[4].hook }} {{ $json.ad_style[4].body }} {{ $json.ad_style[4].cta }}"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "Classify which **nudge marketing** advertise style is suit for the context that I provide and has potential to engage people joining the session."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        2256,
+        1770
+      ],
+      "id": "ba95bd79-2b34-44b8-a2a2-aeb700002f79",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write the social media advertising post from my outline accordingly.\n{{ $json.outline }}",
+        "options": {
+          "systemMessage": "=# Overview\nYou are an expert marketer & advertise outline writer particularly in Nudge Marketing. You will receive information about course for study.\n\n# Your task is to:\n1. Write course advertise caption that be attractive people to join the session.\n2. Give clarify information especially tile, session type,objective, date, time and location.\n3. Output should be Thai language, netural and friendly tone.\n4. Emphasize about meet up and skill exchange all about cgi at this community.\n5. Emphasize about session type.\n6. Ensure all the word not cringe.\n\n## Use this trending information (Optional for more creativity making connecting between audiences):\n{{ $json.news_summary }}\n\n## use nudge marketing advertising style: {{ $json.ad_style[$json.ad_style_selected_idx].title }}\n#Guidance intent (do not copy directly):\n1. trending information then connect to the next one\n2. hook / engaging words eg.{{ $json.ad_style[4].hook }}\n3. body eg.{{ $json.ad_style[4].body }}\n4. pursuad eg.{{ $json.ad_style[4].cta }}",
+          "maxIterations": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        4108,
+        2420
+      ],
+      "id": "7e44c935-52ee-496e-9643-5111312545cf",
+      "name": "Ad Outline Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.news }}",
+        "options": {
+          "systemMessage": "=# Overview\nYou are an expert analyst, you will get information about the news topics amoung animation industry.\n\n# Your task is to:\n1. summary current situation and give comments is that tend to positive or negative.\n2. give what will affect to students, employees.\n3. the format that you give should be only body."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1440,
+        2345
+      ],
+      "id": "333d1a98-a755-49e6-8b1e-5a6914c7d964",
+      "name": "News summarize Agent"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "title_ls = ''\n\nlimit_n = 7\nn = 0\nfor item in _input.all():\n  if n >= limit_n:\n    break\n  title_ls += '## ' + str(item.json.title) + '\\n' + str(item.json.content) + '\\n\\n'\n  n += 1\n\ndata = {\n  'news': title_ls\n}\nreturn data"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        2345
+      ],
+      "id": "d8b9220a-3fed-4a8d-aaf7-27c0c4b05b7d",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "url": "https://www.cartoonbrew.com/feed",
+        "options": {
+          "ignoreSSL": false
+        }
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        2345
+      ],
+      "id": "a5fa51c9-3782-4a50-9455-e4b7ec0ee432",
+      "name": "RSS Read",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-3.5-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2344,
+        1990
+      ],
+      "id": "2eb88480-6755-4b06-8785-31a2a39c3926",
+      "name": "gpt-3.5-turbo",
+      "credentials": {
+        "openAiApi": {
+          "id": "OWBmhC44Dxoxd8qx",
+          "name": "Personal - n8n connect"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "1JUzbgV0V7R1yYKj5ldX16gqcL8DFY6_r5iOQ2txLA80",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $json.output }}{{ \"\\n\\n----------------------------------\\n\\n\\n\" }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        4484,
+        1445
+      ],
+      "id": "5648fbe4-43d0-439f-80c7-7c536b39d889",
+      "name": "Push to Docs1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7y3bs0qq7bWmbPK0",
+          "name": "n8n google oauth2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"ad_style\": [\n    {\n      \"title\": \"FOMO + Future-Self Vision\",\n      \"hook\": \"Imagine 3 months from now—you've mastered [skill], while others are still thinking about it.\",\n      \"body\": \"The world’s changing fast. Those who adapt win. Learning [skill] now means you’re future-proofing yourself—whether it’s for better income, job freedom, or creative independence.\",\n      \"cta\": \"Don’t scroll past your future. Start today 👉 [Link]\"\n    },\n    {\n      \"title\": \"Pain Point + Simple Step\",\n      \"hook\": \"Tired of feeling stuck while others move ahead?\",\n      \"body\": \"The skill gap is real. But it doesn’t take years. A small decision today (like starting [skill]) could shift your entire career/life.\",\n      \"cta\": \"Make progress, not excuses. Join us and start learning now. [Link]\"\n    },\n    {\n      \"title\": \"Testimonial Style / Social Proof\",\n      \"hook\": \"I never thought I'd be earning from this skill I learned in 2 weeks.\",\n      \"body\": \"Stories like [Name] aren’t rare. Thousands are learning [skill] not just for fun—but for better jobs, side incomes, or freedom.\",\n      \"cta\": \"What’s your story going to be? Take the first step 👉 [Link]\"\n    },\n    {\n      \"title\": \"Loss Aversion / Limited Opportunity\",\n      \"hook\": \"People who wait lose out—every single time.\",\n      \"body\": \"While you're hesitating, others are learning [skill], getting hired, or launching their own thing. Time is the most expensive thing you’ll spend.\",\n      \"cta\": \"Secure your spot. Learn [skill] today before this window closes. [Link]\"\n    },\n    {\n      \"title\": \"Identity Activation\",\n      \"hook\": \"You don’t need to be a genius to learn this. You just need to start.\",\n      \"body\": \"Real learners aren’t born—they’re made. If you're someone who values growth, freedom, and building something real, this is for you.\",\n      \"cta\": \"Step into the version of you that doesn’t wait. Join here 👉 [Link]\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1000,
+        2795
+      ],
+      "id": "c802038e-9d97-4429-8fc8-cdc0954d884f",
+      "name": "Marketing Choices"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3e0a9b4-b5d1-4b89-9fe7-39d586a4d8bf",
+              "name": "ad_style_selected_idx",
+              "value": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2632,
+        1320
+      ],
+      "id": "0c144afb-508f-4df7-a353-f50d37be5477",
+      "name": "idx 0"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3e0a9b4-b5d1-4b89-9fe7-39d586a4d8bf",
+              "name": "ad_style_selected_idx",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2632,
+        1520
+      ],
+      "id": "f834bbe1-f724-4d8b-900d-c1b194b9abae",
+      "name": "idx 1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3e0a9b4-b5d1-4b89-9fe7-39d586a4d8bf",
+              "name": "ad_style_selected_idx",
+              "value": 2,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2632,
+        1720
+      ],
+      "id": "ffe93f04-15aa-489a-b2ca-fdce1dc58742",
+      "name": "idx 2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3e0a9b4-b5d1-4b89-9fe7-39d586a4d8bf",
+              "name": "ad_style_selected_idx",
+              "value": 3,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2632,
+        2145
+      ],
+      "id": "05f5894a-b707-48fb-9598-396e278cc428",
+      "name": "idx 3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3e0a9b4-b5d1-4b89-9fe7-39d586a4d8bf",
+              "name": "ad_style_selected_idx",
+              "value": 4,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2632,
+        2345
+      ],
+      "id": "fdee3a90-40ab-40ea-ab46-55f71687cbd7",
+      "name": "idx 4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8d931f3d-b391-4be9-a50a-cc4a73c31b71",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "Finished",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "4e06a396-49df-4adc-8c8c-738481ee5a0f",
+              "leftValue": "={{$runIndex}}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3888,
+        1670
+      ],
+      "id": "cada7323-0548-4634-88ac-7e677aae05d9",
+      "name": "Evaluate"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3e0a9b4-b5d1-4b89-9fe7-39d586a4d8bf",
+              "name": "content",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4484,
+        1645
+      ],
+      "id": "42237e65-0f44-49d5-aa64-e70dbf0aa2d3",
+      "name": "set content"
+    },
+    {
+      "parameters": {
+        "content": "## evaluate",
+        "height": 80,
+        "width": 1100
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3120,
+        1540
+      ],
+      "id": "38d55946-fc60-4d66-b8b0-327a728e318c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Content: {{ $json.content }}\n\nFeedback: {{ $json.output }}",
+        "options": {
+          "systemMessage": "=## ภาพรวม\nคุณเป็นผู้เชี่ยวชาญด้านการเลือกใช้คำพูดให้ดีขึ้น งานของคุณคือนำเนื้อหาโพสมาปรับให้เหมาะสมตามคำติชม\n\n## ผลลัพธ์\nส่งกลับมาแค่เนื้อหาที่ถูกปรับปรุงแล้ว ไม่ต้องมีคำอธิบาย"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        4108,
+        1670
+      ],
+      "id": "e5db141f-1c3a-4760-8f93-8ae1fa1d28da",
+      "name": "Optimizer Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=นี่เนื้อหาที่จะนำโพส:\n{{ $json.content }}",
+        "options": {
+          "systemMessage": "=## ภาพรวม\nคุณเป็นผู้เชี่ยวชาญในการประเมินด้านการเนื้อหาโพส เพื่อเชิญชวน นักเรียน พนักงาน หรือบุคคลทั่วไปมาเข้าร่วม หน้าที่ของคุณคือการให้ข้อเสนอแนะเกี่ยวกับเนื้อหาที่โพส\n\n## เกณฑ์\nตรวจสอบให้แน่ใจว่า:\n- ตรวจสอบให้แน่ใจว่าเนื้อหานั้นมีความชัดเจนกับเนื้อหาการสอนตรงกับกลุ่มเป้าหมาย\n- ตรวจสอบให้แน่ใจว่าภาษาไทยที่ใช้ดูเหมือนกับ Influencer ซึ่งมีความโน้มน้าวและเป็นกันเอง\n- ตรวจสอบให้แน่ใจว่าภาษาที่ใช้ยังคงมีความเป็นมืออาชีพ ไม่เป็นทางการมากเกินไป เสมือนเป็นผู้ร่วมจัดตั้งการพบปะแลกเปลี่ยนความรู้ครั้งนี้\n- ตรวจสอบการใช้คำศัพท์ทางเทคนิค(Enlish Jargon Word) แม่นยำตรงตามกับหัวข้อที่เรียน\n- ไม่ปรับแต่งเนื้อหาเกินจริง หากไม่มีอยู่ในข้อมูลอ้างอิง\n- ลิงค์ลงทะเบียนสามารถใช่งานได้จริง\n- สามารถมีอีโมจิเพื่อความสวยงาม แต่ไม่รกสายตา\n- มี hastag ที่เกี่ยวข้อง\n- ให้ความชัดเจนเกี่ยวกับเรื่องค่าใช้จ่าย หรือว่าฟรี\n\n## ข้อมูลอ้างอิง\n{{ $json.outline }}\n\n## ผลลัพธ์\nคุณเพียงแค่ต้องให้ข้อเสนอแนะในส่วนที่เป็นสิ่งที่ต้องแก้เท่านั้นโดยที่ไม่ต้องมีการชื่นชม หากเนื้อหาสมบูรณ์และเป็นไปตามเกณฑ์ทุกข้อ ให้ตอบกลับแค่คำว่า \"Finished\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        3292,
+        1520
+      ],
+      "id": "e899d53f-de52-4432-ad71-07e45ab35b81",
+      "name": "Evaluator Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        3380,
+        1740
+      ],
+      "id": "e2e19246-6c53-4384-9515-f3dc447d4e63",
+      "name": "4o-mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "OWBmhC44Dxoxd8qx",
+          "name": "Personal - n8n connect"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3668,
+        1670
+      ],
+      "id": "bd36a5d6-f300-45f3-8007-e140886dcd5f",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3e0a9b4-b5d1-4b89-9fe7-39d586a4d8bf",
+              "name": "outline",
+              "value": "=## Course: {{ $json.name }} for {{ $json.property_level }}\n## Facilitator name: {{ $json.instructor.property_full_name_th }} ({{ $json.instructor.property_nick_name_th }})\n## Facilitator career position:{{ $json.instructor.property_position }} @{{ $json.instructor.property_company }}\n## Staff: Instructor & Host team.\n\n## About the session:\n{{ $json.property_introduction }}\n\n## What they will get from the course:\n{{ $json.property_objective }}\n\n## Date:\nfrom {{ $json.property_date_range.start }} to {{ $json.property_date_range.end }}\n\n## Session type:\n{{ $json.property_session_type }}\n\n## Link to enroll\n{{ $json.property_course_url }}\n\n## Maximum people\n{{ $json.property_max_people }}\n\n## Location\n{{ $json.property_location }}\n\n## Requirements\n{{ $json.property_requirement }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2852,
+        1745
+      ],
+      "id": "2e983538-41d0-46d5-8404-ab3923d49784",
+      "name": "set content outline"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": false
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4484,
+        2120
+      ],
+      "id": "6c91c1f8-21b2-4273-b0e4-7fd3c91cb587",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.property_instructor[0] }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        340,
+        1595
+      ],
+      "id": "639c1a29-0095-40c6-84c3-62db3c43aec3",
+      "name": "get pages instructor",
+      "alwaysOutputData": false,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1fd0d3d-d594-48bf-a8b9-c12506761b39",
+              "name": "instructor",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        1595
+      ],
+      "id": "c1942953-56e6-46aa-8904-32437e0626a6",
+      "name": "Set1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2036,
+        1770
+      ],
+      "id": "67dc1fd4-8a7c-406a-aad1-d04b91b94706",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "content|rich_text",
+              "textContent": "={{ $json.output }}"
+            },
+            {
+              "key": "status|status",
+              "statusValue": "awating"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        4704,
+        2845
+      ],
+      "id": "a78478e1-e9d0-4eb9-a7bd-72ba11bbce07",
+      "name": "Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": false
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3072,
+        1745
+      ],
+      "id": "b4850319-d5a6-4e72-803a-aae3a0f2b506",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "21372121-8164-80d2-9cc5-f0d61c7d762f",
+          "mode": "list",
+          "cachedResultName": "social_media_content",
+          "cachedResultUrl": "https://www.notion.so/21372121816480d29cc5f0d61c7d762f"
+        },
+        "limit": 1,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "topic|title",
+              "condition": "contains",
+              "titleValue": "={{ $json.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        340,
+        2695
+      ],
+      "id": "363f9c4e-a122-46f7-85e6-d19b4542cf48",
+      "name": "find exists content",
+      "alwaysOutputData": true,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8d931f3d-b391-4be9-a50a-cc4a73c31b71",
+              "leftValue": "={{ $('find exists content').item.json.property_status }}",
+              "rightValue": "fix",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        780,
+        2870
+      ],
+      "id": "b1ebf509-ef76-4b90-96bd-7cb9be0048bf",
+      "name": "need fix",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8d931f3d-b391-4be9-a50a-cc4a73c31b71",
+              "leftValue": "={{ $json }}",
+              "rightValue": "Finished",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        2695
+      ],
+      "id": "d6e83b19-5565-4f7a-ae5b-cc4c80843981",
+      "name": "not exists",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -100,
+        3245
+      ],
+      "id": "883f55f9-563b-4adc-8be4-6b580a9ccde3",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "21372121-8164-80ea-936c-ca1b516ef017",
+          "mode": "list",
+          "cachedResultName": "cgi_course",
+          "cachedResultUrl": "https://www.notion.so/21372121816480ea936cca1b516ef017"
+        },
+        "limit": 10,
+        "filterType": "manual",
+        "filters": {
+          "conditions": [
+            {
+              "key": "status|status",
+              "condition": "equals",
+              "statusValue": "on_advertise"
+            }
+          ]
+        },
+        "options": {
+          "sort": {
+            "sortValue": [
+              {
+                "timestamp": true,
+                "key": "last_edited_time",
+                "direction": "descending"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        3245
+      ],
+      "id": "51d81d41-438f-440d-878f-6141ad6cbed4",
+      "name": "get pages course list1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "21372121-8164-80d2-9cc5-f0d61c7d762f",
+          "mode": "list",
+          "cachedResultName": "social_media_content",
+          "cachedResultUrl": "https://www.notion.so/21372121816480d29cc5f0d61c7d762f"
+        },
+        "title": "=Advertise: {{ $('set init').item.json.name }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        4186,
+        3045
+      ],
+      "id": "cd4915a7-8056-4006-ae4b-fb1e45130f40",
+      "name": "create new page",
+      "executeOnce": false,
+      "notesInFlow": true,
+      "credentials": {
+        "notionApi": {
+          "id": "8JMRvEMTkNlJv4v6",
+          "name": "burased notion db"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -540,
+        3245
+      ],
+      "id": "7a5c39bc-54b5-46eb-a910-41d4735b7a97",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.debugHelper",
+      "typeVersion": 1,
+      "position": [
+        3072,
+        1545
+      ],
+      "id": "cb3145bd-4d88-440e-a758-9fd5b874b040",
+      "name": "DebugHelper",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "done",
+      "typeVersion": 1,
+      "position": [
+        120,
+        3395
+      ],
+      "id": "4e871a5c-43d5-4f70-a42c-76015a24f035"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        120,
+        2245
+      ],
+      "id": "50acf7c3-7ba2-46a1-b11b-c76f476b8fd6",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "# Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor item in _input.all():\n  item.json.content = item.json.content.replace('\\n\\n', '\\n.\\n')\nreturn _input.all()"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4704,
+        1845
+      ],
+      "id": "9a24620c-5015-4e0f-9501-a7fe7414d717",
+      "name": "replace string"
+    }
+  ],
+  "connections": {
+    "News summarize Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "News summarize Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-3.5-turbo": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "News summarize Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ad Outline Agent": {
+      "main": [
+        [
+          {
+            "node": "set content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Marketing Choices": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "idx 0",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "idx 1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "idx 3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "idx 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "idx 4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "idx 0": {
+      "main": [
+        [
+          {
+            "node": "set content outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "idx 1": {
+      "main": [
+        [
+          {
+            "node": "set content outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "idx 2": {
+      "main": [
+        [
+          {
+            "node": "set content outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "idx 3": {
+      "main": [
+        [
+          {
+            "node": "set content outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "idx 4": {
+      "main": [
+        [
+          {
+            "node": "set content outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set content": {
+      "main": [
+        [
+          {
+            "node": "replace string",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Optimizer Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Evaluator Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Optimizer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Ad Outline Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluator Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Optimizer Agent": {
+      "main": [
+        [
+          {
+            "node": "set content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Push to Docs1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Evaluate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set content outline": {
+      "main": [
+        [
+          {
+            "node": "Ad Outline Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DebugHelper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get pages instructor": {
+      "main": [
+        [
+          {
+            "node": "Set1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set1": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Evaluator Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "find exists content": {
+      "main": [
+        [
+          {
+            "node": "not exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "need fix": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Marketing Choices",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "not exists": {
+      "main": [
+        [
+          {
+            "node": "create new page",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Marketing Choices",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "need fix",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "done",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get pages instructor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "find exists content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "get pages course list1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create new page": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get pages course list1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "get pages instructor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "find exists content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "replace string": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Notion Trigger": {
+      "lastTimeChecked": "2025-06-15T17:52:00.000Z",
+      "possibleDuplicates": [
+        "21372121-8164-80f2-806e-f7b0a092f818"
+      ]
+    },
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b3318f53-da9d-4a22-8f03-e85a04d271c3",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "createdAt": "2025-06-15T07:15:53.533Z",
+      "updatedAt": "2025-06-15T07:15:53.533Z",
+      "id": "IdmwSqVN0qsBEGBm",
+      "name": "on production"
+    }
+  ]
+}
