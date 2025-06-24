@@ -1,0 +1,102 @@
+{
+  "createdAt": "2025-06-14T14:29:28.924Z",
+  "updatedAt": "2025-06-15T03:08:42.000Z",
+  "id": "bHEDkAoaYRGLpP7s",
+  "name": "get_now_fmt",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -140
+      ],
+      "id": "53cc3f6e-34b2-4a2a-b608-c22cf2a9ac83",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://discord.com/api/webhooks/1383452247932932217/c6W2BLoDSX7qpEUtpcmnFfqdw7bCIFyXjzpziARy0Wrd5fLZuucVrIG6Y7UKxiOPSfa8",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{ $json.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -220,
+        -400
+      ],
+      "id": "8c7f906a-e0f2-48ca-b9ba-7ca32b31e23f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "g3WPrnyPDyevJKP5",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        120,
+        -140
+      ],
+      "name": "Call get_now_format",
+      "id": "0c193d9c-898f-4a48-a1de-b0f17018a7e8"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Call get_now_format",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "timezone": "Asia/Bangkok"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "25acbb75-1e69-4770-8439-91f1b0b10abe",
+  "triggerCount": 0,
+  "tags": [
+    {
+      "createdAt": "2025-06-14T16:35:00.314Z",
+      "updatedAt": "2025-06-14T16:35:00.314Z",
+      "id": "FLY23u7lZ3euVVMc",
+      "name": "experimental"
+    }
+  ]
+}
